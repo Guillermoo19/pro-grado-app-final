@@ -1,37 +1,35 @@
+{{-- resources/views/roles/create.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Crear Nuevo Rol') }}
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Crear Rol') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{-- Contenido original de tu formulario de creación de Roles --}}
-                    <h1>Crear Nuevo Rol</h1>
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Crear Nuevo Rol</h3>
 
                     <form action="{{ route('roles.store') }}" method="POST">
                         @csrf
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del Rol</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+
+                        <div class="mb-4">
+                            <x-input-label for="nombre" :value="__('Nombre del Rol')" />
+                            <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" :value="old('nombre')" required autofocus />
+                            <x-input-error :messages="$errors->get('nombre')" class="mt-2" />
                         </div>
-                        <button type="submit" class="btn btn-success">Guardar Rol</button>
-                        <a href="{{ route('roles.index') }}" class="btn btn-secondary">Cancelar</a>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('roles.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
+                                {{ __('Cancelar') }}
+                            </a>
+                            <x-primary-button class="ml-3 bg-chamos-amarillo text-chamos-marron-oscuro hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-500 focus:ring-chamos-amarillo">
+                                {{ __('Guardar Rol') }}
+                            </x-primary-button>
+                        </div>
                     </form>
-                    {{-- FIN del contenido original del formulario --}}
                 </div>
             </div>
         </div>

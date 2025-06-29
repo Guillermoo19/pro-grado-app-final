@@ -5,28 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Asegúrate de que esta línea esté presente
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage; // Importar la fachada Storage
 
 class ProductoController extends Controller
 {
-    // Constructor para aplicar políticas si es necesario a todo el controlador
-    // Puedes dejarlo comentado como está si prefieres autorizar método por método
-    public function __construct()
-    {
-        // $this->middleware('can:viewAny,App\Models\Producto')->only('index');
-        // $this->middleware('can:create,App\Models\Producto')->only('create', 'store');
-        // $this->middleware('can:update,producto')->only('edit', 'update');
-        // $this->middleware('can:delete,producto')->only('destroy');
-    }
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $this->authorize('viewAny', Producto::class); // <-- AÑADE ESTA LÍNEA
-
-        $productos = Producto::with('categoria')->get();
+        Gate::authorize('viewAny', Producto::class);
+        $productos = Producto::all();
         return view('productos.index', compact('productos'));
     }
 
@@ -35,8 +25,7 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Producto::class); // <-- AÑADE ESTA LÍNEA
-
+        Gate::authorize('create', Producto::class);
         $categorias = Categoria::all();
         return view('productos.create', compact('categorias'));
     }
@@ -46,27 +35,28 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Producto::class); // <-- AÑADE ESTA LÍNEA
+        Gate::authorize('create', Producto::class);
 
         $request->validate([
-            'nombre' => 'required|string|max:255|unique:productos,nombre',
+            'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id',
-        ],
-        [
-            'nombre.required' => 'El nombre del producto es obligatorio.',
-            'nombre.unique' => 'Este nombre de producto ya existe.',
-            'precio.required' => 'El precio del producto es obligatorio.',
-            'precio.numeric' => 'El precio debe ser un valor numérico.',
-            'stock.required' => 'El stock del producto es obligatorio.',
-            'stock.integer' => 'El stock debe ser un número entero.',
-            'categoria_id.required' => 'Debe seleccionar una categoría.',
-            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+            'categoria_id' => 'nullable|exists:categorias,id',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validación de imagen
         ]);
 
-        Producto::create($request->all());
+        $data = $request->all();
+
+        // Manejo de la subida de imagen
+        if ($request->hasFile('imagen')) {
+            // Guarda en storage/app/public/productos y obtiene la ruta relativa al disco 'public'
+            $imagePath = $request->file('imagen')->store('productos', 'public'); 
+            // Guarda SOLO la ruta relativa (ej. productos/nombre_hash.jpg)
+            $data['imagen'] = $imagePath; 
+        }
+
+        Producto::create($data);
 
         return redirect()->route('productos.index')->with('success', 'Producto creado exitosamente.');
     }
@@ -76,9 +66,8 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        $this->authorize('view', $producto); // <-- AÑADE ESTA LÍNEA
-
-        abort(404);
+        Gate::authorize('view', $producto);
+        return view('productos.show', compact('producto'));
     }
 
     /**
@@ -86,8 +75,7 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        $this->authorize('update', $producto); // <-- AÑADE ESTA LÍNEA
-
+        Gate::authorize('update', $producto);
         $categorias = Categoria::all();
         return view('productos.edit', compact('producto', 'categorias'));
     }
@@ -97,27 +85,33 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        $this->authorize('update', $producto); // <-- AÑADE ESTA LÍNEA
+        Gate::authorize('update', $producto);
 
         $request->validate([
-            'nombre' => 'required|string|max:255|unique:productos,nombre,' . $producto->id,
+            'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id',
-        ],
-        [
-            'nombre.required' => 'El nombre del producto es obligatorio.',
-            'nombre.unique' => 'Este nombre de producto ya existe.',
-            'precio.required' => 'El precio del producto es obligatorio.',
-            'precio.numeric' => 'El precio debe ser un valor numérico.',
-            'stock.required' => 'El stock del producto es obligatorio.',
-            'stock.integer' => 'El stock debe ser un número entero.',
-            'categoria_id.required' => 'Debe seleccionar una categoría.',
-            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+            'categoria_id' => 'nullable|exists:categorias,id',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validación de imagen
         ]);
 
-        $producto->update($request->all());
+        $data = $request->all();
+
+        // Manejo de la actualización de imagen
+        if ($request->hasFile('imagen')) {
+            // Eliminar imagen antigua si existe
+            // Usar Storage::disk('public')->delete() con la ruta relativa
+            if ($producto->imagen && Storage::disk('public')->exists($producto->imagen)) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+
+            // Guarda la nueva imagen y obtiene la ruta relativa
+            $imagePath = $request->file('imagen')->store('productos', 'public');
+            $data['imagen'] = $imagePath; // Guarda SOLO la ruta relativa
+        }
+
+        $producto->update($data);
 
         return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
     }
@@ -127,10 +121,23 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        $this->authorize('delete', $producto); // <-- AÑADE ESTA LÍNEA
+        Gate::authorize('delete', $producto);
 
+        // Eliminar imagen asociada si existe
+        if ($producto->imagen && Storage::disk('public')->exists($producto->imagen)) {
+            Storage::disk('public')->delete($producto->imagen);
+        }
+        
         $producto->delete();
-
         return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
+    }
+
+    /**
+     * Muestra el catálogo de productos para los clientes.
+     */
+    public function catalogo()
+    {
+        $productos = Producto::all(); 
+        return view('productos.catalogo', compact('productos'));
     }
 }

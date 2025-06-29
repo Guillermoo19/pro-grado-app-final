@@ -1,3 +1,4 @@
+{{-- resources/views/ingredientes/create.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -22,17 +23,18 @@
 
                         <div class="mb-4">
                             <x-input-label for="descripcion" :value="__('Descripción')" />
-                            <textarea id="descripcion" name="descripcion" rows="3" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('descripcion') }}</textarea>
+                            {{-- Usando el componente x-text-area --}}
+                            <x-text-area id="descripcion" class="block mt-1 w-full" name="descripcion">{{ old('descripcion') }}</x-text-area>
                             <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>
-                                {{ __('Guardar Ingrediente') }}
-                            </x-primary-button>
-                            <a href="{{ route('ingredientes.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-3">
+                            <a href="{{ route('ingredientes.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
                                 {{ __('Cancelar') }}
                             </a>
+                            <x-primary-button class="ml-3 bg-chamos-amarillo text-chamos-marron-oscuro hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-500 focus:ring-chamos-amarillo">
+                                {{ __('Guardar Ingrediente') }}
+                            </x-primary-button>
                         </div>
                     </form>
                 </div>

@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Role; // Asegúrate de que esta línea esté presente
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -22,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id', // Deja esto aquí, es correcto
+        'role_id', // Asegúrate de que 'role_id' esté aquí
     ];
 
     /**
@@ -36,45 +35,50 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'created_at' => 'datetime', 
+            'updated_at' => 'datetime',
+        ];
+    }
 
-    // Relación con el modelo Role
+    /**
+     * Get the orders for the user.
+     */
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
+
+    /**
+     * Get the role associated with the user.
+     */
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    // --- AÑADE ESTE MÉTODO BOOT ---
-    protected static function boot()
+    /**
+     * Check if the user has the 'admin' role.
+     * ¡CORRECCIÓN AQUÍ! Cargando la relación 'role' si no está ya cargada
+     */
+    public function isAdmin(): bool
     {
-        parent::boot();
-
-        static::creating(function ($user) {
-            // Asigna un role_id por defecto si no se ha establecido
-            // Asegúrate de que 'Cliente' o 'Usuario' exista en tu tabla roles y tenga el ID 2 (o el que corresponda)
-            if (is_null($user->role_id)) {
-                // Busca el rol 'Cliente' (o el nombre del rol por defecto que quieras)
-                $defaultRole = Role::where('nombre', 'cliente')->first(); // <-- ¡CAMBIADO A 'nombre' y 'cliente' en minúsculas!
-                if ($defaultRole) {
-                    $user->role_id = $defaultRole->id;
-                } else {
-                    // Fallback: Si no existe 'Cliente', asigna un ID conocido o lanza un error
-                    // Considera qué ID quieres para el rol predeterminado (ej: el ID de "Usuario Normal")
-                    // Para este ejemplo, asumiremos que el ID 2 existe para el rol por defecto
-                    // Puedes ajustar esto según los roles que tengas en tu RoleSeeder
-                    $user->role_id = 2; // <<--- ¡CAMBIA ESTE NÚMERO SI TU ID DE ROL POR DEFECTO ES DIFERENTE!
-                                        // Por ejemplo, si tu seeder crea 'admin' con ID 1 y 'user' con ID 2,
-                                        // y quieres que el por defecto sea 'user', usa 2.
-                }
-            }
-        });
+        // Asegúrate de que la relación 'role' esté cargada.
+        // Si no está cargada, la carga de la base de datos para evitar errores.
+        // Esto es útil en contextos donde el usuario no se carga con 'with('role')'.
+        if (!$this->relationLoaded('role')) {
+            $this->load('role');
+        }
+        
+        // Verifica si el rol existe y si su nombre es 'admin'.
+        return $this->role !== null && $this->role->name === 'admin';
     }
-    // --- FIN DEL MÉTODO BOOT ---
 }

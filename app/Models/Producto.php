@@ -14,8 +14,8 @@ class Producto extends Model
         'descripcion',
         'precio',
         'stock',
-        'categoria_id', // Asegúrate de que esta línea esté presente
-        'imagen', // Asegúrate de que esta línea esté presente
+        'categoria_id',
+        'imagen', // <-- ¡ASEGÚRATE DE QUE ESTA LÍNEA ESTÉ PRESENTE!
     ];
 
     // Relación: Un producto pertenece a una categoría
@@ -30,6 +30,10 @@ class Producto extends Model
     {
         return $this->belongsToMany(Ingrediente::class, 'producto_ingrediente')
                     ->withPivot('cantidad', 'unidad_medida')
-                    ->withTimestamps(); // Para que Laravel maneje created_at y updated_at en la tabla pivote
+                    ->withTimestamps();
     }
+
+    // Relación: Un producto puede estar en muchos detalles de pedido (Many-to-Many a través de DetallePedido)
+    // No necesitamos una relación directa 'pedidos()' si usamos DetallePedido para los ítems del pedido.
+    // DetallePedido ya se encarga de la relación entre Producto y Pedido.
 }

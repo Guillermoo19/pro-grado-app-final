@@ -6,19 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
-            // Esta línea es CRÍTICA. Asegúrate de que coincida con el id de 'pedidos'
             $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
-            $table->timestamp('payment_date')->default(now()); // o $table->dateTime('payment_date');
-            $table->string('payment_method');
-            $table->string('status');
+            $table->decimal('monto', 10, 2);
+            $table->string('metodo_pago'); // Ej: "tarjeta", "efectivo", "transferencia"
+            $table->string('estado')->default('pendiente'); // Ej: "pendiente", "completado", "fallido"
+            $table->string('referencia_transaccion')->nullable(); // Para ID de transacción externa
             $table->timestamps();
         });
     }
+
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('pagos');

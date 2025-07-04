@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-// use Illuminate\Support\Facades\View; // Elimina esta línea si está presente
+use Illuminate\Support\Facades\Schema; // Asegúrate de que esta línea esté presente si no lo está
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Elimina la línea siguiente si está presente:
-        // View::addLocation(resource_path('views/ingredientes'));
+        // Añade esta línea para establecer las rondas de bcrypt
+        \Hash::setRounds(12);
+
+        // Si ya tienes Schema::defaultStringLength(191); déjalo.
+        // Si no, no es estrictamente necesario para este problema, pero es una buena práctica.
+        // Schema::defaultStringLength(191);
     }
 }

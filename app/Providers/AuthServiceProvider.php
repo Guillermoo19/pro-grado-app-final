@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log; // Importar la fachada Log
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,7 +16,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         \App\Models\Role::class => \App\Policies\RolePolicy::class,
         \App\Models\Categoria::class => \App\Policies\CategoriaPolicy::class,
         \App\Models\Producto::class => \App\Policies\ProductoPolicy::class,
@@ -39,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
                 Log::info('Gate::before - Rol de usuario cargado para: ' . $user->email);
             }
 
-            Log::info('Gate::before - User ID: ' . $user->id . ', Role ID: ' . ($user->role_id ?? 'NULL') . ', Role Name: ' . ($user->role ? $user->role->name : 'N/A') . ', isAdmin(): ' . ($user->isAdmin() ? 'true' : 'false'));
+            Log::info('Gate::before - User ID: ' . $user->id . ', Role ID: ' . ($user->role_id ?? 'NULL') . ', Role Name: ' . ($user->role ? $user->role->nombre : 'N/A') . ', isAdmin(): ' . ($user->isAdmin() ? 'true' : 'false'));
 
             // Si el usuario es 'admin', permitir todas las habilidades
             if ($user->isAdmin()) {

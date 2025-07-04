@@ -2,169 +2,221 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Producto;
-use App\Models\Pedido;
-use App\Models\DetallePedido;
+use App\Models\Pedido; // Asegúrate de que esta línea esté presente
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB; // Importar la fachada DB para transacciones
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage; // Importar Storage para guardar archivos
 
 class CarritoController extends Controller
 {
     /**
      * Muestra el contenido del carrito de compras.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        $cart = session()->get('cart', []);
-        return view('carrito.index', compact('cart'));
+        $carrito = Session::get('carrito', []);
+        $productosEnCarrito = [];
+        $totalCarrito = 0;
+
+        foreach ($carrito as $id => $cantidad) {
+            $producto = Producto::find($id);
+            if ($producto) {
+                $subtotal = $producto->precio * $cantidad;
+                $productosEnCarrito[] = [
+                    'producto' => $producto,
+                    'cantidad' => $cantidad,
+                    'subtotal' => $subtotal,
+                ];
+                $totalCarrito += $subtotal;
+            }
+        }
+
+        Log::info('CarritoController@index: Carrito mostrado al usuario ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+        return view('carrito.index', compact('productosEnCarrito', 'totalCarrito'));
     }
 
     /**
-     * Añade un producto al carrito.
+     * Agrega un producto al carrito.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Producto  $producto
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function add(Request $request)
+    public function agregar(Request $request, Producto $producto)
     {
-        $producto = Producto::findOrFail($request->id);
-        $cantidad = $request->cantidad ?: 1; // Cantidad por defecto es 1 si no se especifica
+        $cantidad = $request->input('cantidad', 1);
+        $carrito = Session::get('carrito', []);
 
-        $cart = session()->get('cart', []);
-
-        // Si el producto ya está en el carrito, incrementa la cantidad
-        if (isset($cart[$producto->id])) {
-            $cart[$producto->id]['cantidad'] += $cantidad;
+        if (isset($carrito[$producto->id])) {
+            $carrito[$producto->id] += $cantidad;
         } else {
-            // Si no, añade el producto con sus detalles
-            $cart[$producto->id] = [
-                "id" => $producto->id, // Guardar el ID del producto
-                "nombre" => $producto->nombre,
-                "descripcion" => $producto->descripcion,
-                "cantidad" => $cantidad,
-                "precio" => $producto->precio,
-                "imagen" => $producto->imagen // Incluir la imagen
-            ];
+            $carrito[$producto->id] = $cantidad;
         }
 
-        session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Producto añadido al carrito.');
+        Session::put('carrito', $carrito);
+        Log::info('CarritoController@agregar: Producto ' . $producto->nombre . ' agregado al carrito. Cantidad: ' . $cantidad . '. Usuario: ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+        return redirect()->route('carrito.index')->with('success', 'Producto agregado al carrito.');
     }
 
     /**
      * Actualiza la cantidad de un producto en el carrito.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Producto  $producto
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request)
+    public function actualizar(Request $request, Producto $producto)
     {
-        if ($request->id && $request->cantidad) {
-            $cart = session()->get('cart');
-            if (isset($cart[$request->id])) {
-                if ($request->cantidad > 0) {
-                    $producto = Producto::findOrFail($request->id);
-                    // No permitir que la cantidad en el carrito exceda el stock disponible
-                    if ($request->cantidad > $producto->stock) {
-                        return redirect()->back()->with('error', 'No hay suficiente stock para la cantidad solicitada de ' . $producto->nombre . '. Stock disponible: ' . $producto->stock);
-                    }
-                    $cart[$request->id]['cantidad'] = $request->cantidad;
-                    session()->put('cart', $cart);
-                    return redirect()->back()->with('success', 'Cantidad del producto actualizada.');
-                } else {
-                    // Si la cantidad es 0 o menos, eliminar el producto del carrito
-                    return redirect()->route('carrito.remove', ['id' => $request->id]);
-                }
+        $cantidad = $request->input('cantidad');
+        $carrito = Session::get('carrito', []);
+
+        if (isset($carrito[$producto->id])) {
+            if ($cantidad <= 0) {
+                unset($carrito[$producto->id]);
+                Log::info('CarritoController@actualizar: Producto ' . $producto->nombre . ' eliminado del carrito por cantidad 0. Usuario: ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+            } else {
+                $carrito[$producto->id] = $cantidad;
+                Log::info('CarritoController@actualizar: Cantidad de producto ' . $producto->nombre . ' actualizada a ' . $cantidad . '. Usuario: ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
             }
+            Session::put('carrito', $carrito);
+            return redirect()->route('carrito.index')->with('success', 'Carrito actualizado.');
         }
-        return redirect()->back()->with('error', 'Error al actualizar la cantidad del producto.');
+
+        return redirect()->route('carrito.index')->with('error', 'Producto no encontrado en el carrito.');
     }
 
     /**
      * Elimina un producto del carrito.
+     *
+     * @param  \App\Models\Producto  $producto
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function remove(Request $request)
+    public function eliminar(Producto $producto)
     {
-        if ($request->id) {
-            $cart = session()->get('cart');
-            if (isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
-                return redirect()->back()->with('success', 'Producto eliminado del carrito.');
-            }
+        $carrito = Session::get('carrito', []);
+
+        if (isset($carrito[$producto->id])) {
+            unset($carrito[$producto->id]);
+            Session::put('carrito', $carrito);
+            Log::info('CarritoController@eliminar: Producto ' . $producto->nombre . ' eliminado del carrito. Usuario: ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+            return redirect()->route('carrito.index')->with('success', 'Producto eliminado del carrito.');
         }
-        return redirect()->back()->with('error', 'Error al eliminar el producto del carrito.');
+
+        return redirect()->route('carrito.index')->with('error', 'Producto no encontrado en el carrito.');
     }
 
     /**
-     * Procesa el checkout del carrito y crea un pedido.
+     * Procede al checkout, creando un pedido y vaciando el carrito.
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function checkout(Request $request)
+    public function checkout()
     {
-        // Asegúrate de que el usuario esté autenticado
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Debes iniciar sesión para proceder al pago.');
         }
 
-        $cart = session()->get('cart');
-
-        if (empty($cart)) {
-            return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío, no se puede realizar el pago.');
+        $carrito = Session::get('carrito', []);
+        if (empty($carrito)) {
+            return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío.');
         }
 
-        // Usar una transacción de base de datos para asegurar la atomicidad
-        DB::beginTransaction();
-
-        try {
-            $totalAmount = 0;
-            $detallePedidos = []; // Array para almacenar los detalles del pedido a crear
-
-            foreach ($cart as $id => $item) {
-                $producto = Producto::find($id);
-
-                // Verificar si el producto aún existe y si hay suficiente stock
-                if (!$producto || $producto->stock < $item['cantidad']) {
-                    DB::rollBack();
-                    $productName = $producto ? $producto->nombre : 'Un producto';
-                    $availableStock = $producto ? $producto->stock : 0;
-                    return redirect()->route('carrito.index')->with('error', 'No hay suficiente stock para "' . $productName . '". Stock disponible: ' . $availableStock . '. Por favor, ajusta tu carrito.');
-                }
-
-                $subtotal = $item['precio'] * $item['cantidad'];
-                $totalAmount += $subtotal;
-
-                // Restar del stock del producto
-                $producto->stock -= $item['cantidad'];
-                $producto->save();
-
-                // Preparar los detalles para el pedido
-                $detallePedidos[] = [
-                    'producto_id' => $producto->id,
-                    'cantidad' => $item['cantidad'],
-                    'precio_unitario' => $producto->precio,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+        $total = 0;
+        foreach ($carrito as $id => $cantidad) {
+            $producto = Producto::find($id);
+            if ($producto) {
+                $total += $producto->precio * $cantidad;
             }
+        }
 
-            // Crear el nuevo pedido
-            $pedido = Pedido::create([
-                'user_id' => Auth::id(),
-                'order_date' => now(),
-                'total_amount' => $totalAmount,
-                'status' => 'pendiente', // O 'completado' si integras pasarela de pago real
+        // Crear el pedido principal
+        $pedido = Pedido::create([
+            'user_id' => Auth::id(),
+            'total' => $total,
+            'estado' => 'pendiente', // Estado inicial del pedido
+            'estado_pago' => 'pendiente', // Estado inicial del pago
+        ]);
+
+        // Guardar los detalles del pedido
+        foreach ($carrito as $id => $cantidad) {
+            $producto = Producto::find($id);
+            if ($producto) {
+                $pedido->productos()->attach($producto->id, [
+                    'cantidad' => $cantidad,
+                    'precio_unitario' => $producto->precio,
+                    'subtotal' => $producto->precio * $cantidad,
+                ]);
+            }
+        }
+
+        Session::forget('carrito'); // Vaciar el carrito
+        Log::info('CarritoController@checkout: Pedido ID: ' . $pedido->id . ' creado por usuario ' . Auth::user()->email . '. Total: ' . $total);
+
+        // Redirigir a la página de confirmación de pago
+        return redirect()->route('checkout.confirm', $pedido->id)->with('success', 'Pedido creado exitosamente. Por favor, confirma tu pago.');
+    }
+
+    /**
+     * Muestra la página de confirmación de pago para un pedido específico.
+     *
+     * @param  \App\Models\Pedido  $pedido
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function confirmPayment(Pedido $pedido)
+    {
+        // Asegurarse de que el usuario solo pueda confirmar su propio pedido
+        if ($pedido->user_id !== Auth::id()) {
+            return redirect()->route('pedidos.index')->with('error', 'No tienes permiso para confirmar este pedido.');
+        }
+
+        // Si el pedido ya tiene un comprobante o está pagado, redirigir
+        if ($pedido->estado_pago !== 'pendiente') {
+            return redirect()->route('pedidos.show', $pedido->id)->with('info', 'Este pedido ya tiene un estado de pago diferente a "pendiente".');
+        }
+
+        $pedido->load('productos'); // Cargar productos para mostrar el resumen del pedido
+        Log::info('CarritoController@confirmPayment: Usuario ' . Auth::user()->email . ' ha accedido a la confirmación de pago para el pedido ID: ' . $pedido->id);
+        return view('checkout.confirm', compact('pedido'));
+    }
+
+    /**
+     * Procesa la subida del comprobante de pago para un pedido.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Pedido  $pedido
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function uploadPaymentProof(Request $request, Pedido $pedido)
+    {
+        // Asegurarse de que el usuario solo pueda subir comprobante para su propio pedido
+        if ($pedido->user_id !== Auth::id()) {
+            return redirect()->route('pedidos.index')->with('error', 'No tienes permiso para subir un comprobante para este pedido.');
+        }
+
+        // Validar la subida del archivo
+        $request->validate([
+            'comprobante' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Max 2MB
+        ]);
+
+        // Guardar la imagen en el almacenamiento público
+        if ($request->hasFile('comprobante')) {
+            $path = $request->file('comprobante')->store('comprobantes', 'public');
+
+            // Actualizar el pedido con la URL del comprobante y cambiar el estado de pago
+            $pedido->update([
+                'comprobante_imagen_url' => $path,
+                'estado_pago' => 'subido', // Nuevo estado: 'subido' o 'en_revision'
             ]);
 
-            // Guardar los detalles del pedido
-            $pedido->detallePedidos()->createMany($detallePedidos);
-
-            // Vaciar el carrito de la sesión
-            session()->forget('cart');
-
-            DB::commit(); // Confirmar la transacción
-
-            return view('checkout.confirmacion', compact('pedido'))->with('success', 'Tu pedido ha sido realizado con éxito.');
-
-        } catch (\Exception $e) {
-            DB::rollBack(); // Revertir la transacción en caso de error
-            // Logear el error para depuración
-            \Log::error('Error al procesar el checkout: ' . $e->getMessage());
-            return redirect()->route('carrito.index')->with('error', 'Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.');
+            Log::info('CarritoController@uploadPaymentProof: Comprobante subido para pedido ID: ' . $pedido->id . ' por usuario ' . Auth::user()->email . '. URL: ' . $path);
+            return redirect()->route('pedidos.show', $pedido->id)->with('success', 'Comprobante de pago subido exitosamente. Tu pedido está ahora en revisión.');
         }
+
+        return back()->with('error', 'No se pudo subir el comprobante de pago. Inténtalo de nuevo.');
     }
 }

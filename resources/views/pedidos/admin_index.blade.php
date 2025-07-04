@@ -45,27 +45,27 @@
                                                 {{ $pedido->id }}
                                             </th>
                                             <td class="py-4 px-6">
-                                                {{ $pedido->user->name ?? 'N/A' }} {{-- Muestra el nombre del usuario --}}
+                                                {{ $pedido->user->name ?? 'N/A' }}
                                             </td>
                                             <td class="py-4 px-6">
-                                                {{ $pedido->order_date->format('d/m/Y H:i') }}
+                                                {{ $pedido->created_at->format('d/m/Y H:i') }}
                                             </td>
                                             <td class="py-4 px-6">
-                                                ${{ number_format($pedido->total_amount, 2) }}
+                                                ${{ number_format($pedido->total, 2) }}
                                             </td>
                                             <td class="py-4 px-6">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                    {{ $pedido->status === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                                    {{ $pedido->status === 'completado' ? 'bg-green-100 text-green-800' : '' }}
-                                                    {{ $pedido->status === 'cancelado' ? 'bg-red-100 text-red-800' : '' }}">
-                                                    {{ ucfirst($pedido->status) }}
+                                                    {{ $pedido->estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                                    {{ $pedido->estado === 'completado' ? 'bg-green-100 text-green-800' : '' }}
+                                                    {{ $pedido->estado === 'cancelado' ? 'bg-red-100 text-red-800' : '' }}">
+                                                    {{ ucfirst($pedido->estado) }}
                                                 </span>
                                             </td>
                                             <td class="py-4 px-6">
-                                                <a href="{{ route('pedidos.show', $pedido->id) }}" class="font-medium text-blue-600 hover:underline">
+                                                {{-- CORREGIDO: Apunta a la nueva ruta admin_show --}}
+                                                <a href="{{ route('pedidos.admin_show', $pedido->id) }}" class="font-medium text-blue-600 hover:underline">
                                                     {{ __('Ver Detalles') }}
                                                 </a>
-                                                {{-- Aquí podríamos añadir un botón para cambiar el estado, lo haremos más tarde --}}
                                             </td>
                                         </tr>
                                     @endforeach

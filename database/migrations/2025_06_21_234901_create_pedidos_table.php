@@ -7,22 +7,29 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecuta las migraciones.
      */
     public function up(): void
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Clave foránea a 'users'
-            $table->dateTime('order_date'); // Tu campo para la fecha/hora del pedido
-            $table->decimal('total_amount', 10, 2); // Tu campo para el monto total
-            $table->string('status')->default('pendiente'); // Tu campo para el estado
-            $table->timestamps(); // Esto añadirá 'created_at' y 'updated_at' automáticamente
+
+            // ELIMINAMOS 'order_date' porque 'created_at' de timestamps() hará esta función.
+            // $table->dateTime('order_date'); // <-- ¡ELIMINAR ESTA LÍNEA!
+
+            // Renombramos 'total_amount' a 'total'
+            $table->decimal('total', 10, 2); // Renombrado a 'total'
+
+            // Renombramos 'status' a 'estado'
+            $table->string('estado')->default('pendiente'); // Renombrado a 'estado'
+
+            $table->timestamps(); // Esto añade 'created_at' y 'updated_at' automáticamente
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Revierte las migraciones.
      */
     public function down(): void
     {

@@ -1,71 +1,93 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Confirmación de Pedido - Los Chamos</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-    <!-- Styles -->
-    @vite('resources/css/app.css')
-</head>
-<body class="font-sans antialiased bg-gray-100 text-gray-900">
-    <!-- Barra de Navegación Simple -->
-    <nav class="bg-chamos-marron-oscuro p-4 shadow-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-chamos-amarillo text-2xl font-bold">Los Chamos</a>
-            <div>
-                <a href="{{ route('productos.catalogo') }}" class="text-chamos-amarillo hover:text-white px-3 py-2 rounded-md text-sm font-medium mr-4">Catálogo</a>
-                <a href="{{ route('carrito.index') }}" class="text-chamos-amarillo hover:text-white px-3 py-2 rounded-md text-sm font-medium mr-4">Carrito</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="text-chamos-amarillo hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-chamos-amarillo hover:text-white px-3 py-2 rounded-md text-sm font-medium">Iniciar Sesión</a>
-                    <a href="{{ route('register') }}" class="text-chamos-amarillo hover:text-white px-3 py-2 rounded-md text-sm font-medium">Registrarse</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Confirmación de Pedido y Pago') }}
+        </h2>
+    </x-slot>
 
-    <!-- Contenido Principal de Confirmación -->
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <h3 class="text-2xl font-bold mb-6 text-chamos-marron-oscuro">{{ __('Tu Pedido Ha Sido Creado') }}</h3>
+
                 @if (session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                @endif
+                @if (session('info'))
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('info') }}</span>
+                    </div>
+                @endif
 
-                <h1 class="text-4xl font-bold text-chamos-marron-oscuro mb-4">¡Pedido Realizado con Éxito!</h1>
-                <p class="text-lg text-gray-700 mb-6">Gracias por tu compra. Tu pedido #{{ $pedido->id }} ha sido procesado.</p>
-                
-                <div class="text-left inline-block bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-md mb-8">
-                    <h2 class="text-2xl font-semibold text-chamos-marron-oscuro mb-4">Detalles del Pedido</h2>
-                    <p class="text-gray-700 mb-2"><strong>Número de Pedido:</strong> {{ $pedido->id }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Fecha del Pedido:</strong> {{ $pedido->order_date->format('d/m/Y H:i') }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Total:</strong> ${{ number_format($pedido->total_amount, 2) }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Estado:</strong> <span class="capitalize">{{ $pedido->status }}</span></p>
-
-                    <h3 class="text-xl font-semibold text-chamos-marron-claro mt-6 mb-3">Productos Incluidos:</h3>
-                    <ul class="list-disc list-inside text-gray-700">
-                        @foreach ($pedido->detallePedidos as $detalle)
-                            <li>{{ $detalle->producto->nombre }} - Cantidad: {{ $detalle->cantidad }} - Precio unitario: ${{ number_format($detalle->precio_unitario, 2) }}</li>
-                        @endforeach
-                    </ul>
+                <div class="mb-8">
+                    <p class="text-lg text-gray-700 mb-2"><strong>Número de Pedido:</strong> {{ $pedido->id }}</p>
+                    <p class="text-lg text-gray-700 mb-2"><strong>Total a Pagar:</strong> <span class="text-green-600 font-bold text-xl">${{ number_format($pedido->total, 2) }}</span></p>
+                    <p class="text-md text-gray-600">Por favor, realiza la transferencia bancaria al siguiente número de cuenta y sube el comprobante.</p>
                 </div>
 
-                <div class="mt-6">
-                    <a href="{{ route('productos.catalogo') }}" class="inline-flex items-center px-6 py-3 bg-chamos-amarillo border border-transparent rounded-md font-semibold text-chamos-marron-oscuro uppercase tracking-widest hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-chamos-amarillo focus:ring-offset-2 transition ease-in-out duration-150 mr-4">
-                        Continuar Comprando
-                    </a>
-                    <a href="{{ route('pedidos.index') }}" class="inline-flex items-center px-6 py-3 bg-chamos-marron-claro border border-transparent rounded-md font-semibold text-white uppercase tracking-widest hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-chamos-marron-claro focus:ring-offset-2 transition ease-in-out duration-150">
-                        Ver Mis Pedidos
+                <!-- Información de la Cuenta Bancaria -->
+                <div class="mb-8 p-6 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 class="text-xl font-semibold text-gray-800 mb-4">{{ __('Datos Bancarios para la Transferencia') }}</h4>
+                    <p class="text-gray-700 mb-2"><strong>Banco:</strong> Banco Ejemplo</p>
+                    <p class="text-gray-700 mb-2"><strong>Número de Cuenta:</strong> 123-456789-0</p>
+                    <p class="text-gray-700 mb-2"><strong>Nombre del Titular:</strong> Tu Empresa S.A.</p>
+                    <p class="text-gray-700 mb-2"><strong>Tipo de Cuenta:</strong> Ahorros</p>
+                    <p class="text-gray-700 mb-2"><strong>RUC/NIT:</strong> 1234567890001</p>
+                </div>
+
+                <!-- Formulario de Subida de Comprobante -->
+                <div class="p-6 border border-gray-200 rounded-lg shadow-sm">
+                    <h4 class="text-xl font-semibold text-gray-800 mb-4">{{ __('Subir Comprobante de Pago') }}</h4>
+
+                    @if ($pedido->comprobante_imagen_url)
+                        <div class="mb-4">
+                            <p class="text-gray-700">Comprobante actual subido:</p>
+                            <img src="{{ asset('storage/' . $pedido->comprobante_imagen_url) }}" alt="Comprobante de Pago" class="w-64 h-auto rounded-lg shadow-md mt-2">
+                            <p class="text-sm text-gray-500 mt-1">Estado del pago: <span class="font-bold">{{ ucfirst($pedido->estado_pago) }}</span></p>
+                        </div>
+                        @if ($pedido->estado_pago === 'subido' || $pedido->estado_pago === 'verificado')
+                            <p class="text-green-600 font-semibold mb-4">El comprobante ya ha sido subido y está en revisión o verificado.</p>
+                        @else
+                            <p class="text-orange-600 font-semibold mb-4">Puedes subir un nuevo comprobante si el anterior fue rechazado o si necesitas actualizarlo.</p>
+                        @endif
+                    @else
+                        <p class="text-gray-600 mb-4">Por favor, sube una imagen (JPG, PNG, GIF, SVG) de tu comprobante de transferencia.</p>
+                    @endif
+
+                    <form action="{{ route('checkout.upload_proof', $pedido->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="comprobante" class="block text-sm font-medium text-gray-700">Seleccionar Comprobante:</label>
+                            <input type="file" name="comprobante" id="comprobante" class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100"/>
+                            @error('comprobante')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                            Subir Comprobante
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Botón para ver mis pedidos -->
+                <div class="mt-8 flex justify-end">
+                    <a href="{{ route('pedidos.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Ir a Mis Pedidos
                     </a>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</x-app-layout>

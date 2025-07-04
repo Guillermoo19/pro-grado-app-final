@@ -1,35 +1,27 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
+        /** @type {import('tailwindcss').Config} */
+        export default {
+            content: [
+                './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+                './storage/framework/views/*.php',
+                './resources/views/**/*.blade.php',
+            ],
 
-/** @type {import('tailwindcss').Config} */
-export default {
-    content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-    ],
-
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Figtree', 'sans-serif'],
+                    },
+                    colors: {
+                        // Colores de Chamos Burguer
+                        'chamos-marron-oscuro': '#4A2C2A', // Un marrón oscuro para fondos o texto principal
+                        'chamos-marron-claro': '#7B5B5B', // Un marrón más claro para detalles o bordes
+                        'chamos-amarillo': '#FFD700',      // Amarillo dorado para acentos, botones, texto resaltado
+                        'chamos-beige': '#F5F5DC',         // Un beige suave para fondos claros o texto secundario
+                        'chamos-rojo': '#DC143C',          // Rojo para errores o alertas
+                    },
+                },
             },
-            // *******************************************************
-            // ¡IMPORTANTE! Asegúrate de tener estos colores definidos
-            // Estos son ejemplos, ajústalos a tus colores exactos si son diferentes
-            // *******************************************************
-            colors: {
-                'chamos-marron-oscuro': '#4A2C2A', // Un marrón oscuro para el fondo de la nav
-                'chamos-marron-claro': '#7E5752',  // Un marrón más claro para bordes o detalles
-                'chamos-amarillo': '#F5A623',      // Un amarillo brillante para el texto principal
-                'chamos-beige': '#F5E6CC',         // Un beige suave para texto secundario
-                'chamos-verde': '#4CAF50',         // Un verde vibrante para el botón de añadir (ejemplo)
-                // Puedes añadir más colores aquí según tu paleta
-            },
-            // *******************************************************
-        },
-    },
 
-    plugins: [forms],
-};
-
+            plugins: [require('@tailwindcss/forms')],
+        };
+        

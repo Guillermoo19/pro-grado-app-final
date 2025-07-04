@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
             $table->integer('cantidad');
             $table->decimal('precio_unitario', 10, 2); // Precio unitario al momento de la compra
+            $table->decimal('subtotal', 10, 2); // <--- ¡NUEVA LÍNEA CLAVE AQUÍ!
             $table->timestamps();
         });
     }

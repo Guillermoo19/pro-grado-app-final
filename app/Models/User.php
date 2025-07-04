@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -21,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role_id', // Asegúrate de que 'role_id' esté aquí
+        'role_id',
     ];
 
     /**
@@ -35,50 +36,36 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'created_at' => 'datetime', 
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     /**
-     * Get the orders for the user.
+     * Define la relación con el modelo Role.
      */
-    public function pedidos()
-    {
-        return $this->hasMany(Pedido::class);
-    }
-
-    /**
-     * Get the role associated with the user.
-     */
-    public function role()
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
     /**
-     * Check if the user has the 'admin' role.
-     * ¡CORRECCIÓN AQUÍ! Cargando la relación 'role' si no está ya cargada
+     * Verifica si el usuario es administrador.
      */
     public function isAdmin(): bool
     {
-        // Asegúrate de que la relación 'role' esté cargada.
-        // Si no está cargada, la carga de la base de datos para evitar errores.
-        // Esto es útil en contextos donde el usuario no se carga con 'with('role')'.
-        if (!$this->relationLoaded('role')) {
-            $this->load('role');
-        }
-        
-        // Verifica si el rol existe y si su nombre es 'admin'.
-        return $this->role !== null && $this->role->name === 'admin';
+        return $this->role && $this->role->nombre === 'admin';
+    }
+
+    /**
+     * Define la relación con los pedidos del usuario.
+     */
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class);
     }
 }

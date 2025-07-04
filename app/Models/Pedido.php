@@ -4,41 +4,54 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pedido extends Model
 {
     use HasFactory;
 
-    protected $table = 'pedidos'; // Es buena práctica especificarlo si no es la convención plural perfecta
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'user_id',
-        'order_date',
-        'total_amount',
-        'status',
+        'total',
+        'estado',
+        'comprobante_imagen_url', // NUEVA COLUMNA
+        'estado_pago',            // NUEVA COLUMNA
     ];
 
-    // ************************************************
-    // NUEVA LÍNEA: Casts para convertir order_date a un objeto Carbon
-    // ************************************************
+    /**
+     * Los atributos que deberían ser casteados.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
-        'order_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    // Un pedido pertenece a un usuario
-    public function user()
+
+    /**
+     * Relación con el usuario que hizo el pedido.
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Un pedido tiene muchos detalles de pedido (los ítems/productos del pedido)
-    public function detallePedidos()
+    /**
+     * La relación con los productos del pedido (a través de la tabla pivote detalle_pedidos).
+     */
+    public function productos(): BelongsToMany
     {
-        return $this->hasMany(DetallePedido::class);
+        return $this->belongsToMany(Producto::class, 'detalle_pedidos')
+                     ->withPivot('cantidad', 'precio_unitario', 'subtotal')
+                     ->withTimestamps();
     }
 
-    // Un pedido puede tener muchos pagos
-    public function pagos()
-    {
-        return $this->hasMany(Pago::class);
-    }
+    // Puedes añadir otros métodos o relaciones aquí si es necesario
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+// use Illuminate\Support\Facades\Log; // Ya no es necesario importar Log si no se usa
 
 class AuthenticatedSessionController extends Controller
 {

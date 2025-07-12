@@ -12,7 +12,8 @@
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Crear Nuevo Rol</h3>
 
-                    <form action="{{ route('roles.store') }}" method="POST">
+                    {{-- CORREGIDO: action="{{ route('admin.roles.store') }}" --}}
+                    <form action="{{ route('admin.roles.store') }}" method="POST">
                         @csrf
 
                         <div class="mb-4">
@@ -22,7 +23,8 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('roles.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
+                            {{-- CORREGIDO: href="{{ route('admin.roles.index') }}" --}}
+                            <a href="{{ route('admin.roles.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
                                 {{ __('Cancelar') }}
                             </a>
                             <x-primary-button class="ml-3 bg-chamos-amarillo text-chamos-marron-oscuro hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-500 focus:ring-chamos-amarillo">

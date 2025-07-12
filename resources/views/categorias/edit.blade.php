@@ -10,7 +10,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('categorias.update', $categoria->id) }}">
+                    {{-- CORREGIDO: action="{{ route('admin.categorias.update', $categoria->id) }}" --}}
+                    <form method="POST" action="{{ route('admin.categorias.update', $categoria->id) }}">
                         @csrf
                         @method('PUT')
 
@@ -27,7 +28,8 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('categorias.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
+                            {{-- CORREGIDO: href="{{ route('admin.categorias.index') }}" --}}
+                            <a href="{{ route('admin.categorias.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150 mr-2">
                                 {{ __('Cancelar') }}
                             </a>
                             <x-primary-button class="ml-3 bg-blue-200 text-black hover:bg-blue-300 focus:bg-blue-300 active:bg-blue-400 focus:ring-blue-200">

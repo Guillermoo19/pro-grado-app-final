@@ -63,7 +63,8 @@ class PedidoController extends Controller
 
         Log::info('PedidoController@adminIndex: Usuario ' . Auth::user()->email . ' ha accedido a la gestión de pedidos.');
 
-        return view('pedidos.admin_index', compact('pedidos'));
+        // CAMBIO AQUÍ: Apuntar a la nueva ubicación de la vista del administrador
+        return view('admin.pedidos.index', compact('pedidos'));
     }
 
     /**

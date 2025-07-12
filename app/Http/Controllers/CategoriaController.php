@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth; // Asegúrate de que esta línea esté pres
 
 class CategoriaController extends Controller
 {
-    // Constructor para aplicar políticas si es necesario a todo el controlador
+    // Constructor para aplicar políticas (opcional, como en otros controladores)
     // Puedes dejarlo comentado como está si prefieres autorizar método por método
     public function __construct()
     {
@@ -61,7 +61,8 @@ class CategoriaController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría creada exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.categorias.index')->with('success', 'Categoría creada exitosamente.');
     }
 
     /**
@@ -106,7 +107,8 @@ class CategoriaController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría actualizada exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.categorias.index')->with('success', 'Categoría actualizada exitosamente.');
     }
 
     /**
@@ -118,6 +120,7 @@ class CategoriaController extends Controller
 
         $categoria->delete();
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría eliminada exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.categorias.index')->with('success', 'Categoría eliminada exitosamente.');
     }
 }

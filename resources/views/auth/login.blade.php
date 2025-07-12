@@ -1,61 +1,67 @@
 <x-guest-layout>
-    {{-- Asegúrate de que x-auth-card exista y tenga estilos que permitan ver su contenido --}}
-    <x-auth-card> 
+    <x-authentication-card>
         <x-slot name="logo">
             <a href="/">
-                {{-- Asegura que el logo tenga un color visible (por ejemplo, gris oscuro) --}}
-                <x-application-logo class="w-20 h-20 fill-current text-gray-800" /> 
+                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
         </x-slot>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+        <x-validation-errors class="mb-4" />
+
+        @if (session('status'))
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        {{-- Mensaje de error personalizado si viene de CarritoController --}}
+        @if (session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <!-- Email Address -->
             <div>
-                <x-input-label for="email" :value="__('Email')" />
-                {{-- No es necesario el dark:bg-gray-900 y dark:text-gray-100 aquí, ya que el componente text-input lo maneja --}}
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             </div>
 
-            <!-- Password -->
             <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" />
-                {{-- No es necesario el dark:bg-gray-900 y dark:text-gray-100 aquí, ya que el componente text-input lo maneja --}}
-                <x-text-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
-            <!-- Remember Me -->
             <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    {{-- El componente de input gestiona el dark mode para el checkbox --}}
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                    {{-- Eliminamos la clase dark:text-gray-400 para asegurar el color por defecto --}}
+                <label for="remember_me" class="flex items-center">
+                    <x-checkbox id="remember_me" name="remember" />
                     <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
             </div>
 
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                    {{-- Eliminamos las clases dark:text-gray-400 y dark:hover:text-gray-100 --}}
                     <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
                         {{ __('Forgot your password?') }}
                     </a>
                 @endif
 
-                {{-- Botón "Log in": Colores de marca para un buen contraste --}}
-                <x-primary-button class="ms-3 bg-chamos-marron-oscuro text-white hover:bg-chamos-marron-claro focus:bg-chamos-marron-claro active:bg-chamos-marron-claro focus:ring-chamos-marron-oscuro">
+                <x-button class="ms-4">
                     {{ __('Log in') }}
-                </x-primary-button>
+                </x-button>
             </div>
         </form>
-    </x-auth-card>
+
+        {{-- ENLACE PARA REGISTRARSE --}}
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">¿No tienes una cuenta?</p>
+            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('register') }}">
+                {{ __('Regístrate aquí') }}
+            </a>
+        </div>
+        {{-- FIN DEL ENLACE PARA REGISTRARSE --}}
+
+    </x-authentication-card>
 </x-guest-layout>

@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pedido extends Model
 {
@@ -19,39 +17,32 @@ class Pedido extends Model
     protected $fillable = [
         'user_id',
         'total',
-        'estado',
-        'comprobante_imagen_url', // NUEVA COLUMNA
-        'estado_pago',            // NUEVA COLUMNA
+        'estado_pedido',
+        'estado_pago',
+        'comprobante_url',
+        'tipo_entrega',
+        'direccion_entrega',
+        'telefono_contacto',
     ];
 
     /**
-     * Los atributos que deberían ser casteados.
-     *
-     * @var array<string, string>
+     * Get the user that owns the order.
      */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-
-    /**
-     * Relación con el usuario que hizo el pedido.
-     */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * La relación con los productos del pedido (a través de la tabla pivote detalle_pedidos).
+     * The products that belong to the order.
+     *
+     * CAMBIO AQUÍ: Especificamos el nombre de la tabla pivote 'detalle_pedidos'
+     * para que coincida con la migración.
      */
-    public function productos(): BelongsToMany
+    public function productos()
     {
-        return $this->belongsToMany(Producto::class, 'detalle_pedidos')
-                     ->withPivot('cantidad', 'precio_unitario', 'subtotal')
-                     ->withTimestamps();
+        return $this->belongsToMany(Producto::class, 'detalle_pedidos') // <-- CAMBIO AQUÍ
+                    ->withPivot('cantidad', 'precio_unitario', 'subtotal')
+                    ->withTimestamps();
     }
-
-    // Puedes añadir otros métodos o relaciones aquí si es necesario
 }

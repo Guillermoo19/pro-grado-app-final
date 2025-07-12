@@ -61,7 +61,8 @@ class IngredienteController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente creado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente creado exitosamente.');
     }
 
     /**
@@ -106,7 +107,8 @@ class IngredienteController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente actualizado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente actualizado exitosamente.');
     }
 
     /**
@@ -118,6 +120,7 @@ class IngredienteController extends Controller
 
         $ingrediente->delete();
 
-        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente eliminado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente eliminado exitosamente.');
     }
 }

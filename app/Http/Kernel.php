@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http; // ¡ESTO ES LO IMPORTANTE! Debe ser 'App\Http'
+namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -8,14 +8,11 @@ class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
-     *
-     * @var array<int, class-string>
      */
     protected $middleware = [
         // \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
@@ -23,8 +20,6 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware groups.
-     *
-     * @var array<string, array<int, class-string>>
      */
     protected $middlewareGroups = [
         'web' => [
@@ -34,12 +29,11 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // Carga la relación del rol del usuario después de la autenticación
-            \App\Http\Middleware\LoadUserRole::class, 
+            // \App\Http\Middleware\IsAdminMiddleware::class, // <-- ELIMINADO/COMENTADO DE AQUÍ
         ],
 
         'api' => [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -47,36 +41,27 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or individual routes.
-     *
-     * @var array<string, class-string>
+     * Estos son alias que puedes usar en tus rutas, ej: middleware('auth')
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        // 'admin' => \App\Http\Middleware\IsAdminMiddleware::class, // <-- ELIMINADO/COMENTADO DE AQUÍ
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 
     /**
-     * The priority-sorted list of HTTP middleware.
+     * The URIs that should be excluded from CSRF verification.
      *
-     * This ensures non-critical middleware are always run last.
-     *
-     * @var array<string, class-string>
+     * @var array<int, string>
      */
-    protected $middlewarePriority = [
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Auth\Middleware\Authenticate::class,
-        \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        \Illuminate\Auth\Middleware\Authorize::class,
+    protected $except = [
+        // Añade la ruta de checkout aquí para depuración
+        'carrito/checkout', // <--- ESTA ES LA LÍNEA AÑADIDA/MODIFICADA
     ];
 }

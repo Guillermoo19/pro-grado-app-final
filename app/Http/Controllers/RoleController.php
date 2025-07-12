@@ -55,7 +55,8 @@ class RoleController extends Controller
             'nombre' => $request->nombre,
         ]);
 
-        return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.roles.index')->with('success', 'Rol creado exitosamente.');
     }
 
     public function show(Role $role)
@@ -90,7 +91,8 @@ class RoleController extends Controller
 
         $role->update(['nombre' => $request->nombre]);
 
-        return redirect()->route('roles.index')->with('success', 'Rol actualizado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.roles.index')->with('success', 'Rol actualizado exitosamente.');
     }
 
     public function destroy(Role $role)
@@ -100,6 +102,7 @@ class RoleController extends Controller
 
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Rol eliminado exitosamente.');
+        // CORREGIDO: Redirige a la ruta de administración
+        return redirect()->route('admin.roles.index')->with('success', 'Rol eliminado exitosamente.');
     }
 }

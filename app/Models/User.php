@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -22,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
+        'role_id', // ¡IMPORTANTE! Asegúrate de que 'role_id' sea fillable
     ];
 
     /**
@@ -43,29 +42,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        // Si role_id es un entero, no necesita ser casteado a un tipo específico aquí a menos que quieras
     ];
 
     /**
-     * Define la relación con el modelo Role.
+     * Define the relationship with Pedido (one-to-many).
      */
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    /**
-     * Verifica si el usuario es administrador.
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role && $this->role->nombre === 'admin';
-    }
-
-    /**
-     * Define la relación con los pedidos del usuario.
-     */
-    public function pedidos(): HasMany
+    public function pedidos()
     {
         return $this->hasMany(Pedido::class);
+    }
+
+    /**
+     * Check if the user has the 'admin' role.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        // Basado en tu base de datos, el role_id para 'admin' es 1.
+        // Asegúrate de que este ID (1) corresponda al ID del rol de administrador en tu tabla 'roles'.
+        return $this->role_id === 1;
+    }
+
+    /**
+     * Define the relationship with Role.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

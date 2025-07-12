@@ -23,38 +23,38 @@
                         </div>
                     @endif
 
+                    {{-- Verifica si el carrito está vacío --}}
                     @if (empty($productosEnCarrito))
                         <p class="text-gray-600">{{ __('Tu carrito está vacío.') }}</p>
                         <div class="mt-6">
                             <a href="{{ route('productos.index') }}" class="inline-flex items-center px-4 py-2 bg-chamos-amarillo border border-transparent rounded-md font-semibold text-xs text-chamos-marron-oscuro uppercase tracking-widest hover:bg-yellow-500 focus:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('Ir al Catálogo') }}
+                                {{ __('Ir al Menú') }}
                             </a>
                         </div>
                     @else
                         <div class="space-y-6">
-                            @php $total = 0; @endphp
                             @foreach ($productosEnCarrito as $item)
-                                @php $total += $item['subtotal']; @endphp 
                                 <div class="flex items-center bg-gray-50 rounded-lg shadow-sm p-4">
                                     <div class="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden mr-4">
-                                        @if ($item['producto']->imagen)
-                                            <img src="{{ asset('storage/' . $item['producto']->imagen) }}" alt="{{ $item['producto']->nombre }}" class="w-full h-full object-cover">
+                                        @if ($item['imagen'])
+                                            <img src="{{ asset('storage/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="w-full h-full object-cover">
                                         @else
-                                            <img src="https://via.placeholder.com/100x100.png?text=Sin+Imagen" alt="Placeholder" class="w-full h-full object-cover">
+                                            <img src="https://via.placeholder.co/100x100.png?text=Sin+Imagen" alt="Placeholder" class="w-full h-full object-cover">
                                         @endif
                                     </div>
 
                                     <div class="flex-grow">
-                                        <h4 class="text-lg font-semibold text-gray-800">{{ $item['producto']->nombre }}</h4>
-                                        <p class="text-sm text-gray-600 mb-2">{{ $item['producto']->descripcion }}</p>
-                                        <p class="text-md font-medium text-gray-700">${{ number_format($item['producto']->precio, 2) }} x {{ $item['cantidad'] }}</p>
+                                        <h4 class="text-lg font-semibold text-gray-800">{{ $item['nombre'] }}</h4>
+                                        {{-- La descripción no está en el array del carrito, si la necesitas, cárgala desde el controlador --}}
+                                        {{-- <p class="text-sm text-gray-600 mb-2">{{ $item['descripcion'] }}</p> --}}
+                                        <p class="text-md font-medium text-gray-700">${{ number_format($item['precio'], 2) }} x {{ $item['cantidad'] }}</p>
                                     </div>
 
                                     <div class="flex items-center space-x-3 ml-4">
                                         {{-- Formulario para actualizar cantidad --}}
                                         <form action="{{ route('carrito.update') }}" method="POST" class="flex items-center">
                                             @csrf
-                                            <input type="hidden" name="producto_id" value="{{ $item['producto']->id }}">
+                                            <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
                                             <input type="number" name="cantidad" value="{{ $item['cantidad'] }}" min="1" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
                                             <button type="submit" 
                                                     style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
@@ -67,7 +67,7 @@
                                         {{-- Formulario para eliminar producto --}}
                                         <form action="{{ route('carrito.remove') }}" method="POST">
                                             @csrf
-                                            <input type="hidden" name="producto_id" value="{{ $item['producto']->id }}">
+                                            <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
                                             <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                                 Eliminar
                                             </button>
@@ -77,14 +77,20 @@
                             @endforeach
                         </div>
 
-                        <div class="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
-                            <h4 class="text-xl font-bold text-gray-900">{{ __('Total del Carrito:') }} ${{ number_format($total, 2) }}</h4>
-                            <form action="{{ route('carrito.checkout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="px-6 py-3 bg-chamos-verde text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    {{ __('Proceder al Pago') }}
-                                </button>
-                            </form>
+                        {{-- Contenedor del total y el botón de pago --}}
+                        <div class="flex flex-col sm:flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200 relative">
+                            <h4 class="text-xl font-bold text-gray-900 mb-4 sm:mb-0">{{ __('Total del Carrito:') }} ${{ number_format($total, 2) }}</h4>
+                            
+                            {{-- Formulario de Checkout REAL --}}
+                            <div class="ml-auto relative z-10">
+                                <form id="checkoutForm" action="{{ route('carrito.checkout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="px-6 py-3 bg-chamos-verde text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        {{ __('Proceder al Pago') }}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     @endif
                 </div>

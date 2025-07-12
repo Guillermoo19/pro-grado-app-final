@@ -11,10 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Crear Nuevo Producto</h3>
 
-                    {{-- ************************************************* --}}
-                    {{-- ¡IMPORTANTE! Añadido enctype para la subida de archivos --}}
-                    {{-- ************************************************* --}}
-                    <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.productos.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         {{-- Campo Nombre --}}
@@ -38,9 +35,9 @@
                             <x-input-error :messages="$errors->get('precio')" class="mt-2" />
                         </div>
 
-                        {{-- Campo Stock --}}
+                        {{-- CAMBIO AQUÍ: Campo Disponibilidad (antes Stock) --}}
                         <div class="mb-4">
-                            <x-input-label for="stock" :value="__('Stock')" />
+                            <x-input-label for="stock" :value="__('Disponibilidad (Cantidad)')" /> {{-- Etiqueta cambiada --}}
                             <x-text-input id="stock" class="block mt-1 w-full" type="number" name="stock" :value="old('stock')" required />
                             <x-input-error :messages="$errors->get('stock')" class="mt-2" />
                         </div>
@@ -59,24 +56,19 @@
                             <x-input-error :messages="$errors->get('categoria_id')" class="mt-2" />
                         </div>
 
-                        {{-- ********************************* --}}
-                        {{-- NUEVO CAMPO: IMAGEN DEL PRODUCTO --}}
-                        {{-- ********************************* --}}
+                        {{-- Campo Imagen del Producto --}}
                         <div class="mb-4">
                             <x-input-label for="imagen" :value="__('Imagen del Producto')" />
-                            <input id="imagen" class="block mt-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="imagen" />
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">JPG, PNG, GIF o SVG (Máx. 2MB)</p>
+                            <input id="imagen" class="block mt-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" name="imagen" />
+                            <p class="mt-1 text-sm text-gray-500">JPG, PNG, GIF o SVG (Máx. 2MB)</p>
                             <x-input-error :messages="$errors->get('imagen')" class="mt-2" />
                         </div>
-                        {{-- ********************************* --}}
-                        {{-- FIN NUEVO CAMPO --}}
-                        {{-- ********************************* --}}
 
                         <div class="flex items-center justify-end mt-4">
                             <x-primary-button class="ms-4">
                                 {{ __('Guardar Producto') }}
                             </x-primary-button>
-                            <a href="{{ route('productos.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-3">
+                            <a href="{{ route('admin.productos.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-3">
                                 {{ __('Cancelar') }}
                             </a>
                         </div>

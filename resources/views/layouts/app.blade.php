@@ -14,20 +14,18 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    {{-- Fondo del body: blanco por defecto, gris muy oscuro en modo oscuro --}}
-    <body class="font-sans antialiased bg-gray-100 dark:bg-gray-950">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-950"> {{-- Contenedor principal --}}
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
-            @if (isset($header))
-                {{-- Header de la página: blanco por defecto, gris oscuro en modo oscuro --}}
-                <header class="bg-white dark:bg-gray-850 shadow">
+            @isset($header)
+                <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
-            @endif
+            @endisset
 
             <!-- Page Content -->
             <main>

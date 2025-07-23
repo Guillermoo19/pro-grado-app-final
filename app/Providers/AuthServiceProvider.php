@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log; // Elimina esta línea si ya no la necesitas
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -28,35 +28,25 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Define Gates para roles de usuario
         Gate::before(function (User $user, string $ability) {
-            Log::info('Gate::before - Usuario: ' . $user->email . ', Habilidad: ' . $ability);
+            // Elimina las líneas de depuración
+            // Log::info('AuthServiceProvider - Gate::before - Usuario: ' . $user->email . ', Habilidad: ' . $ability);
 
-            // Asegura que la relación 'role' del usuario esté cargada.
-            if (!$user->relationLoaded('role')) {
+            if (! $user->relationLoaded('role')) {
                 $user->loadMissing('role');
-                Log::info('Gate::before - Rol de usuario cargado para: ' . $user->email);
+                // Log::info('AuthServiceProvider - Gate::before - Rol de usuario cargado para: ' . $user->email); // Elimina esta línea
             }
 
-            Log::info('Gate::before - User ID: ' . $user->id . ', Role ID: ' . ($user->role_id ?? 'NULL') . ', Role Name: ' . ($user->role ? $user->role->nombre : 'N/A') . ', isAdmin(): ' . ($user->isAdmin() ? 'true' : 'false'));
+            // Elimina las líneas de depuración
+            // Log::info('AuthServiceProvider - Gate::before - User ID: ' . $user->id . ', Role ID: ' . ($user->role_id ?? 'NULL') . ', Role Name: ' . ($user->role ? $user->role->nombre : 'N/A') . ', isAdmin(): ' . ($user->isAdmin() ? 'true' : 'false'));
 
-            // Si el usuario es 'admin', permitir todas las habilidades
             if ($user->isAdmin()) {
-                Log::info('Gate::before - Usuario ' . $user->email . ' es ADMIN. Permitir acceso.');
+                // Log::info('AuthServiceProvider - Gate::before - Usuario ' . $user->email . ' es ADMIN. Permitir acceso.'); // Elimina esta línea
                 return true;
             }
-            Log::info('Gate::before - Usuario ' . $user->email . ' NO es ADMIN o isAdmin() es false.');
-        });
 
-        // Define la habilidad 'viewAll' para el modelo Pedido
-        Gate::define('viewAll', function (User $user) {
-            Log::info('Gate::define(viewAll) - Usuario: ' . $user->email);
-            if (!$user->relationLoaded('role')) {
-                $user->loadMissing('role');
-                Log::info('Gate::define(viewAll) - Rol de usuario cargado (dentro de viewAll): ' . $user->email);
-            }
-            Log::info('Gate::define(viewAll) - isAdmin() para ' . $user->email . ': ' . ($user->isAdmin() ? 'true' : 'false'));
-            return $user->isAdmin();
+            // Log::info('AuthServiceProvider - Gate::before - Usuario ' . $user->email . ' NO es ADMIN o isAdmin() es false. Continuando con otros Gates/Policies.'); // Elimina esta línea
+            return null;
         });
     }
 }

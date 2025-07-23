@@ -8,6 +8,10 @@ class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
+     *
+     * These middleware are run during every request to your application.
+     *
+     * @var array<int, class-string>
      */
     protected $middleware = [
         // \App\Http\Middleware\TrustProxies::class,
@@ -20,6 +24,8 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware groups.
+     *
+     * @var array<string, array<int, class-string>>
      */
     protected $middlewareGroups = [
         'web' => [
@@ -29,7 +35,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // \App\Http\Middleware\IsAdminMiddleware::class, // <-- ELIMINADO/COMENTADO DE AQUÍ
         ],
 
         'api' => [
@@ -41,27 +46,18 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware.
-     * Estos son alias que puedes usar en tus rutas, ej: middleware('auth')
+     *
+     * These middleware may be assigned to groups or individual routes.
+     *
+     * @var array<string, class-string>
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-
-        // 'admin' => \App\Http\Middleware\IsAdminMiddleware::class, // <-- ELIMINADO/COMENTADO DE AQUÍ
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-    ];
-
-    /**
-     * The URIs that should be excluded from CSRF verification.
-     *
-     * @var array<int, string>
-     */
-    protected $except = [
-        // Añade la ruta de checkout aquí para depuración
-        'carrito/checkout', // <--- ESTA ES LA LÍNEA AÑADIDA/MODIFICADA
+        'can' => \Illuminate\Auth\Middleware\Authorize::class, // <-- ¡ASEGÚRATE DE QUE ESTA LÍNEA ESTÉ ASÍ!
     ];
 }

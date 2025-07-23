@@ -5,92 +5,77 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB; // Asegúrate de que DB esté importado
+use Illuminate\Support\Facades\Log; // Para depuración
 
 class PedidoController extends Controller
 {
     /**
-     * Muestra el historial de pedidos del usuario autenticado (cliente).
-     *
-     * @return \Illuminate\View\View
+     * Muestra la lista de pedidos del usuario autenticado (cliente).
      */
     public function index()
     {
-        // Obtener solo los pedidos del usuario autenticado
-        $pedidos = Auth::user()->pedidos()->with('productos')->orderBy('created_at', 'desc')->get();
-        
-        Log::info('PedidoController@index: Usuario ' . Auth::user()->email . ' ha accedido a sus pedidos.');
-
+        $pedidos = Auth::user()->pedidos()->orderBy('created_at', 'desc')->get();
         return view('pedidos.index', compact('pedidos'));
     }
 
     /**
-     * Muestra los detalles de un pedido específico del usuario autenticado.
-     *
-     * @param  \App\Models\Pedido  $pedido
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * Muestra los detalles de un pedido específico del usuario autenticado (cliente).
      */
     public function show(Pedido $pedido)
     {
-        // Asegurarse de que el usuario solo pueda ver sus propios pedidos
+        // Asegúrate de que el usuario autenticado sea el dueño del pedido
         if ($pedido->user_id !== Auth::id()) {
-            return redirect()->route('pedidos.index')->with('error', 'No tienes permiso para ver este pedido.');
+            abort(403, 'Acceso no autorizado a este pedido.');
         }
-
-        // Cargar la relación 'productos' para mostrar los detalles del pedido
-        $pedido->load('productos');
-
         return view('pedidos.show', compact('pedido'));
     }
 
     /**
-     * Muestra todos los pedidos para la administración (solo para administradores).
-     *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * Muestra la lista de todos los pedidos para el administrador.
      */
     public function adminIndex()
     {
-        // Usar Gate para verificar si el usuario es administrador
-        if (Gate::denies('viewAll', Pedido::class)) {
-            Log::warning('PedidoController@adminIndex: Intento de acceso no autorizado a la gestión de pedidos por usuario ID: ' . Auth::id());
-            return redirect()->route('dashboard')->with('error', 'No tienes permiso para acceder a la gestión de pedidos.');
-        }
-
-        // Cargar todos los pedidos con sus relaciones de usuario y productos
-        $pedidos = Pedido::with(['user', 'productos'])->orderBy('created_at', 'desc')->get();
-
         Log::info('PedidoController@adminIndex: Usuario ' . Auth::user()->email . ' ha accedido a la gestión de pedidos.');
-
-        // CAMBIO AQUÍ: Apuntar a la nueva ubicación de la vista del administrador
+        $pedidos = Pedido::with('user')->orderBy('created_at', 'desc')->get(); // Carga también la relación de usuario
         return view('admin.pedidos.index', compact('pedidos'));
     }
 
     /**
      * Muestra los detalles de un pedido específico para el administrador.
-     *
-     * @param  \App\Models\Pedido  $pedido
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function adminShow(Pedido $pedido)
     {
-        // Usar Gate para verificar si el usuario es administrador
-        if (Gate::denies('viewAll', Pedido::class)) { // Reutilizamos 'viewAll' para la autorización
-            Log::warning('PedidoController@adminShow: Intento de acceso no autorizado a detalles de pedido por usuario ID: ' . Auth::id());
-            return redirect()->route('dashboard')->with('error', 'No tienes permiso para ver los detalles de este pedido.');
-        }
-
-        // Cargar la relación 'productos' para mostrar los detalles del pedido
-        // También cargar la relación 'user' para mostrar quién hizo el pedido en la vista de admin
-        $pedido->load(['productos', 'user']);
-
-        Log::info('PedidoController@adminShow: Administrador ' . Auth::user()->email . ' ha accedido a los detalles del pedido ID: ' . $pedido->id);
-
-        // Reutilizamos la misma vista 'pedidos.show'
-        return view('pedidos.show', compact('pedido'));
+        // El middleware 'can:access-admin' ya protege esta ruta, así que no necesitamos una verificación de usuario aquí.
+        // Carga la relación 'productos' para acceder a los detalles del pedido
+        $pedido->load('productos');
+        return view('admin.pedidos.show', compact('pedido'));
     }
 
-    // Puedes añadir otros métodos CRUD para administradores aquí (edit, update, destroy)
-    // Asegúrate de usar Gate::allows() o Gate::denies() para protegerlos.
+    /**
+     * Actualiza el estado del pedido desde el panel de administración.
+     */
+    public function updateEstadoPedido(Request $request, Pedido $pedido)
+    {
+        $request->validate([
+            'estado_pedido' => 'required|in:pendiente,en_preparacion,en_camino,entregado,cancelado',
+        ]);
+
+        $pedido->update(['estado_pedido' => $request->estado_pedido]);
+
+        return back()->with('success', 'Estado del pedido actualizado con éxito.');
+    }
+
+    /**
+     * Actualiza el estado del pago desde el panel de administración.
+     */
+    public function updateEstadoPago(Request $request, Pedido $pedido)
+    {
+        $request->validate([
+            'estado_pago' => 'required|in:pendiente,pendiente_revision,pagado,rechazado',
+        ]);
+
+        $pedido->update(['estado_pago' => $request->estado_pago]);
+
+        return back()->with('success', 'Estado del pago actualizado con éxito.');
+    }
 }

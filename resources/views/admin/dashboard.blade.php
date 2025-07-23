@@ -28,6 +28,11 @@
                             <h4 class="font-semibold text-lg text-purple-800">Gestionar Pedidos</h4>
                             <p class="text-sm text-purple-600">Revisar y actualizar el estado de los pedidos.</p>
                         </a>
+                        {{-- AÑADIDO: Enlace para Gestionar Usuarios --}}
+                        <a href="{{ route('admin.users.index') }}" class="block p-4 bg-orange-100 rounded-lg shadow hover:bg-orange-200 transition">
+                            <h4 class="font-semibold text-lg text-orange-800">Gestionar Usuarios</h4>
+                            <p class="text-sm text-orange-600">Administrar usuarios y sus roles.</p>
+                        </a>
                         {{-- Añade más enlaces de administración aquí si tienes más secciones --}}
                     </div>
                 </div>

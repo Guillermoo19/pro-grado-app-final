@@ -7,7 +7,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IngredienteController;
-
+use App\Http\Controllers\UserController; // Asegúrate de que este use esté aquí
 
 /*
 |--------------------------------------------------------------------------
@@ -26,13 +26,11 @@ Route::get('/', function () {
 });
 
 // Rutas accesibles para TODOS (Invitados y Autenticados)
-// Estas rutas NO requieren que el usuario esté logueado
-Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index'); // Menú
-Route::get('/productos/{producto}', [ProductoController::class, 'show'])->name('productos.show'); // Detalle del Plato
+Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
+Route::get('/productos/{producto}', [ProductoController::class, 'show'])->name('productos.show');
 
 // Rutas del Carrito (accesibles para invitados)
 Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
-// Sincronizar con los nombres de métodos en CarritoController
 Route::post('/carrito/add', [CarritoController::class, 'agregar'])->name('carrito.add');
 Route::post('/carrito/update', [CarritoController::class, 'actualizar'])->name('carrito.update');
 Route::post('/carrito/remove', [CarritoController::class, 'eliminar'])->name('carrito.remove');
@@ -42,7 +40,7 @@ Route::post('/carrito/remove', [CarritoController::class, 'eliminar'])->name('ca
 Route::middleware('auth')->group(function () {
     // Dashboard (para usuarios normales)
     Route::get('/dashboard', function () {
-        return view('dashboard'); // Asume que tienes un dashboard.blade.php para usuarios normales
+        return view('dashboard');
     })->name('dashboard');
 
     // Perfil de usuario
@@ -56,19 +54,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/upload-proof/{pedido}', [CarritoController::class, 'uploadProof'])->name('checkout.upload_proof');
 
     // Rutas de Pedidos para el cliente (Mis Pedidos)
-    Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); // PedidoController@index ahora carga resources/views/pedidos/index.blade.php
-    Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show'); // PedidoController@show carga resources/views/pedidos/show.blade.php
+    Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
 
 
     // Rutas de Administración (Solo para usuarios con rol 'admin')
+    // El middleware 'can:access-admin' se aplicará al grupo de rutas 'admin'
     Route::middleware(['can:access-admin'])->prefix('admin')->name('admin.')->group(function () {
         // Dashboard de Administración
         Route::get('/dashboard', function () {
-            return view('admin.dashboard'); // Asegúrate de que esta es la vista correcta para el admin dashboard
+            return view('admin.dashboard');
         })->name('dashboard');
 
         // Rutas para Productos (Admin)
-        Route::resource('productos', ProductoController::class); // Estas rutas Resource usarán admin.productos.index, admin.productos.show, etc.
+        Route::resource('productos', ProductoController::class);
         
         // Rutas para Roles (Admin)
         Route::resource('roles', RoleController::class);
@@ -79,9 +78,14 @@ Route::middleware('auth')->group(function () {
         // Rutas para Ingredientes (Admin)
         Route::resource('ingredientes', IngredienteController::class);
 
-        // Rutas para Pedidos (Admin) - Nombres de ruta corregidos
-        Route::get('/pedidos', [PedidoController::class, 'adminIndex'])->name('pedidos.index'); // Ahora es admin.pedidos.index
-        Route::get('/pedidos/{pedido}', [PedidoController::class, 'adminShow'])->name('pedidos.show'); // Ahora es admin.pedidos.show
+        // Rutas para Pedidos (Admin)
+        Route::get('/pedidos', [PedidoController::class, 'adminIndex'])->name('pedidos.index');
+        Route::get('/pedidos/{pedido}', [PedidoController::class, 'adminShow'])->name('pedidos.show');
+        Route::patch('/pedidos/{pedido}/update-estado-pedido', [PedidoController::class, 'updateEstadoPedido'])->name('pedidos.update_estado_pedido');
+        Route::patch('/pedidos/{pedido}/update-estado-pago', [PedidoController::class, 'updateEstadoPago'])->name('pedidos.update_estado_pago');
+
+        // Rutas para Usuarios (Admin)
+        Route::resource('users', UserController::class)->except(['create', 'store']);
     });
 });
 

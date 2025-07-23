@@ -21,7 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role_id', // ¡IMPORTANTE! Asegúrate de que 'role_id' sea fillable
+        'phone_number',
+        'role_id',
     ];
 
     /**
@@ -42,11 +43,20 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        // Si role_id es un entero, no necesita ser casteado a un tipo específico aquí a menos que quieras
     ];
 
     /**
-     * Define the relationship with Pedido (one-to-many).
+     * Define la relación con el modelo Role.
+     * Un usuario pertenece a un rol.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Define la relación con los pedidos del usuario.
+     * Un usuario puede tener muchos pedidos.
      */
     public function pedidos()
     {
@@ -54,22 +64,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check if the user has the 'admin' role.
+     * Verifica si el usuario tiene el rol de administrador.
+     * Utiliza la relación 'role' y el campo 'nombre' del rol.
      *
      * @return bool
      */
     public function isAdmin()
     {
-        // Basado en tu base de datos, el role_id para 'admin' es 1.
-        // Asegúrate de que este ID (1) corresponda al ID del rol de administrador en tu tabla 'roles'.
-        return $this->role_id === 1;
+        return $this->role && $this->role->nombre === 'admin';
     }
 
     /**
-     * Define the relationship with Role.
+     * Verifica si el usuario es el administrador general (super admin).
+     * Asumimos que el administrador general tiene el ID 1.
      */
-    public function role()
+    public function isSuperAdmin()
     {
-        return $this->belongsTo(Role::class);
+        return $this->id === 1;
     }
 }

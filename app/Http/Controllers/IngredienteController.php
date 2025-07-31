@@ -11,40 +11,41 @@ class IngredienteController extends Controller
     // Constructor para aplicar políticas (opcional, como en otros controladores)
     public function __construct()
     {
-        // Puedes dejarlo comentado si prefieres autorizar método por método
-        // $this->middleware('can:viewAny,App\Models\Ingrediente')->only('index');
-        // $this->middleware('can:create,App\Models\Ingrediente')->only('create', 'store');
-        // $this->middleware('can:update,ingrediente')->only('edit', 'update');
-        // $this->middleware('can:delete,ingrediente')->only('destroy');
+        // Se aplicará la autorización en cada método para mayor claridad.
     }
 
     /**
      * Display a listing of the resource.
+     * Muestra la lista de ingredientes para el panel de administración.
      */
     public function index()
     {
-        $this->authorize('viewAny', Ingrediente::class); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('viewAny', Ingrediente::class); // Autoriza ver la lista de ingredientes
 
         $ingredientes = Ingrediente::all();
-        return view('ingredientes.index', compact('ingredientes'));
+        // CAMBIO CLAVE: Cargar la vista desde la carpeta admin
+        return view('admin.ingredientes.index', compact('ingredientes'));
     }
 
     /**
      * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo ingrediente.
      */
     public function create()
     {
-        $this->authorize('create', Ingrediente::class); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('create', Ingrediente::class); // Autoriza crear un ingrediente
 
-        return view('ingredientes.create');
+        // CAMBIO CLAVE: Cargar la vista desde la carpeta admin
+        return view('admin.ingredientes.create');
     }
 
     /**
      * Store a newly created resource in storage.
+     * Almacena un nuevo ingrediente en la base de datos.
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Ingrediente::class); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('create', Ingrediente::class); // Autoriza crear un ingrediente
 
         $request->validate([
             'nombre' => 'required|string|max:255|unique:ingredientes,nombre',
@@ -61,36 +62,42 @@ class IngredienteController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        // CORREGIDO: Redirige a la ruta de administración
+        // Redirige a la ruta de administración
         return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente creado exitosamente.');
     }
 
     /**
      * Display the specified resource.
+     * Muestra los detalles de un ingrediente específico (si se implementa).
      */
     public function show(Ingrediente $ingrediente)
     {
-        $this->authorize('view', $ingrediente); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('view', $ingrediente); // Autoriza ver este ingrediente específico
 
-        abort(404); // O la vista de show si la implementas
+        // Si no tienes una vista específica para 'show', puedes mantener abort(404)
+        // o redirigir a la lista de ingredientes.
+        abort(404);
     }
 
     /**
      * Show the form for editing the specified resource.
+     * Muestra el formulario para editar un ingrediente existente.
      */
     public function edit(Ingrediente $ingrediente)
     {
-        $this->authorize('update', $ingrediente); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('update', $ingrediente); // Autoriza actualizar este ingrediente específico
 
-        return view('ingredientes.edit', compact('ingrediente'));
+        // CAMBIO CLAVE: Cargar la vista desde la carpeta admin
+        return view('admin.ingredientes.edit', compact('ingrediente'));
     }
 
     /**
      * Update the specified resource in storage.
+     * Actualiza un ingrediente existente en la base de datos.
      */
     public function update(Request $request, Ingrediente $ingrediente)
     {
-        $this->authorize('update', $ingrediente); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('update', $ingrediente); // Autoriza actualizar este ingrediente específico
 
         $request->validate([
             'nombre' => 'required|string|max:255|unique:ingredientes,nombre,' . $ingrediente->id,
@@ -107,20 +114,21 @@ class IngredienteController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        // CORREGIDO: Redirige a la ruta de administración
+        // Redirige a la ruta de administración
         return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente actualizado exitosamente.');
     }
 
     /**
      * Remove the specified resource from storage.
+     * Elimina un ingrediente de la base de datos.
      */
     public function destroy(Ingrediente $ingrediente)
     {
-        $this->authorize('delete', $ingrediente); // <-- AÑADE ESTA LÍNEA
+        $this->authorize('delete', $ingrediente); // Autoriza eliminar este ingrediente específico
 
         $ingrediente->delete();
 
-        // CORREGIDO: Redirige a la ruta de administración
+        // Redirige a la ruta de administración
         return redirect()->route('admin.ingredientes.index')->with('success', 'Ingrediente eliminado exitosamente.');
     }
 }

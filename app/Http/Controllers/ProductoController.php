@@ -18,55 +18,48 @@ class ProductoController extends Controller
      */
     public function __construct()
     {
-        // Los métodos 'index' y 'show' ahora son públicos por defecto.
-        // Las políticas 'viewAny' y 'view' en ProductoPolicy deben permitir a todos.
-        // Solo aplicamos el middleware 'can' a las acciones que requieren ser admin.
         $this->middleware('can:create,App\Models\Producto')->only('create', 'store');
         $this->middleware('can:update,producto')->only('edit', 'update');
         $this->middleware('can:delete,producto')->only('destroy');
     }
 
     /**
-     * Muestra el catálogo de productos para el público y la lista para administración.
-     * La vista se adapta según el rol del usuario.
+     * Muestra el catálogo de productos para el público.
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        // La política viewAny en ProductoPolicy ahora permite a todos ver el listado.
-        // No necesitamos $this->authorize('viewAny', Producto::class); aquí si la política devuelve true para todos.
         $productos = Producto::with('categoria')->orderBy('nombre')->get();
-
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            Log::info('ProductoController@index: Lista de productos para administración accedida por ' . Auth::user()->email);
-        } else {
-            Log::info('ProductoController@index: Catálogo de productos público accedido por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
-        }
-
-        return view('productos.index', compact('productos'));
+        Log::info('ProductoController@index: Catálogo de productos público accedido por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+        return view('productos.index', compact('productos')); // Vista pública
     }
 
     /**
-     * Muestra los detalles de un producto específico para el público y la administración.
-     * La vista se adapta según el rol del usuario.
+     * Muestra la lista de productos para el panel de administración.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function adminIndex()
+    {
+        $this->authorize('viewAny', Producto::class);
+
+        $productos = Producto::with('categoria')->orderBy('nombre')->get();
+        Log::info('ProductoController@adminIndex: Lista de productos para administración accedida por ' . Auth::user()->email);
+        return view('admin.productos.index', compact('productos')); // Vista de administración
+    }
+
+    /**
+     * Muestra los detalles de un producto específico para el público.
      *
      * @param  \App\Models\Producto  $producto
      * @return \Illuminate\View\View
      */
     public function show(Producto $producto)
     {
-        // La política 'view' en ProductoPolicy ahora permite a todos ver los detalles.
-        // No necesitamos $this->authorize('view', $producto); aquí si la política devuelve true para todos.
         $producto->load('ingredientes');
-
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            Log::info('ProductoController@show: Detalles de producto para administración accedidos para ID: ' . $producto->id . ' por ' . Auth::user()->email);
-        } else {
-            Log::info('ProductoController@show: Detalles de producto público accedidos para ID: ' . $producto->id . ' por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
-        }
-
-        return view('productos.show', compact('producto'));
+        Log::info('ProductoController@show: Detalles de producto público accedidos para ID: ' . $producto->id . ' por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
+        return view('productos.show', compact('producto')); // Vista pública de detalles
     }
 
     /**
@@ -77,12 +70,11 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Producto::class); // Autoriza crear un producto (solo admins)
-
+        $this->authorize('create', Producto::class);
         $categorias = Categoria::all();
         $ingredientes = Ingrediente::all();
         Log::info('ProductoController@create: Formulario de creación de producto accedido por ' . Auth::user()->email);
-        return view('productos.create', compact('categorias', 'ingredientes'));
+        return view('admin.productos.create', compact('categorias', 'ingredientes'));
     }
 
     /**
@@ -94,17 +86,35 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Producto::class); // Autoriza crear un producto (solo admins)
+        $this->authorize('create', Producto::class);
 
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'stock' => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id', // CAMBIO AQUÍ: Ahora es 'required'
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categoria_id' => 'required|exists:categorias,id',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'ingredientes' => 'array',
             'ingredientes.*' => 'exists:ingredientes,id',
+        ],
+        [
+            'nombre.required' => 'El nombre del producto es obligatorio.',
+            'precio.required' => 'El precio del producto es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número.',
+            'precio.min' => 'El precio no puede ser negativo.',
+            'precio.regex' => 'El precio debe tener como máximo dos decimales.',
+            'stock.required' => 'El stock es obligatorio.',
+            'stock.integer' => 'El stock debe ser un número entero.',
+            'stock.min' => 'El stock no puede ser negativo.',
+            'categoria_id.required' => 'La categoría es obligatoria.',
+            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+            'imagen.required' => 'La imagen del producto es obligatoria.',
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, gif o svg.',
+            'imagen.max' => 'La imagen no debe exceder los 2MB.',
+            'ingredientes.array' => 'Los ingredientes deben ser un formato de lista.',
+            'ingredientes.*.exists' => 'Alguno de los ingredientes seleccionados no es válido.',
         ]);
 
         $productoData = $request->except('ingredientes');
@@ -115,12 +125,18 @@ class ProductoController extends Controller
 
         $producto = Producto::create($productoData);
 
+        // --- CAMBIO CLAVE AQUÍ: Preparar datos para la tabla pivote ---
         if ($request->has('ingredientes')) {
-            $producto->ingredientes()->sync($request->input('ingredientes'));
+            $ingredientesToSync = [];
+            foreach ($request->input('ingredientes') as $ingredienteId) {
+                $ingredientesToSync[$ingredienteId] = ['cantidad' => 1, 'unidad_medida' => 'unidad']; // Valores predeterminados
+            }
+            $producto->ingredientes()->sync($ingredientesToSync);
         }
+        // --- FIN CAMBIO CLAVE ---
 
         Log::info('ProductoController@store: Producto ' . $producto->nombre . ' creado exitosamente por ' . Auth::user()->email . '. ID: ' . $producto->id);
-        return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.'); // Cambiado a admin.productos.index
+        return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
     }
 
     /**
@@ -132,13 +148,12 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        $this->authorize('update', $producto); // Autoriza actualizar este producto (solo admins)
-
+        $this->authorize('update', $producto);
         $categorias = Categoria::all();
         $ingredientes = Ingrediente::all();
         $producto->load('ingredientes');
         Log::info('ProductoController@edit: Formulario de edición de producto accedido para ID: ' . $producto->id . ' por ' . Auth::user()->email);
-        return view('productos.edit', compact('producto', 'categorias', 'ingredientes'));
+        return view('admin.productos.edit', compact('producto', 'categorias', 'ingredientes'));
     }
 
     /**
@@ -151,17 +166,34 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        $this->authorize('update', $producto); // Autoriza actualizar este producto (solo admins)
+        $this->authorize('update', $producto);
 
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'stock' => 'required|integer|min:0',
-            'categoria_id' => 'required|exists:categorias,id', // CAMBIO AQUÍ: Ahora es 'required'
+            'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'ingredientes' => 'array',
             'ingredientes.*' => 'exists:ingredientes,id',
+        ],
+        [
+            'nombre.required' => 'El nombre del producto es obligatorio.',
+            'precio.required' => 'El precio del producto es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número.',
+            'precio.min' => 'El precio no puede ser negativo.',
+            'precio.regex' => 'El precio debe tener como máximo dos decimales.',
+            'stock.required' => 'El stock es obligatorio.',
+            'stock.integer' => 'El stock debe ser un número entero.',
+            'stock.min' => 'El stock no puede ser negativo.',
+            'categoria_id.required' => 'La categoría es obligatoria.',
+            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, gif o svg.',
+            'imagen.max' => 'La imagen no debe exceder los 2MB.',
+            'ingredientes.array' => 'Los ingredientes deben ser un formato de lista.',
+            'ingredientes.*.exists' => 'Alguno de los ingredientes seleccionados no es válido.',
         ]);
 
         $productoData = $request->except('ingredientes');
@@ -175,10 +207,21 @@ class ProductoController extends Controller
 
         $producto->update($productoData);
 
-        $producto->ingredientes()->sync($request->input('ingredientes', []));
+        // --- CAMBIO CLAVE AQUÍ: Preparar datos para la tabla pivote ---
+        if ($request->has('ingredientes')) {
+            $ingredientesToSync = [];
+            foreach ($request->input('ingredientes') as $ingredienteId) {
+                $ingredientesToSync[$ingredienteId] = ['cantidad' => 1, 'unidad_medida' => 'unidad']; // Valores predeterminados
+            }
+            $producto->ingredientes()->sync($ingredientesToSync);
+        } else {
+            // Si no se seleccionan ingredientes, desvincular todos los existentes
+            $producto->ingredientes()->detach();
+        }
+        // --- FIN CAMBIO CLAVE ---
 
         Log::info('ProductoController@update: Producto ' . $producto->nombre . ' actualizado exitosamente por ' . Auth::user()->email . '. ID: ' . $producto->id);
-        return redirect()->route('admin.productos.index')->with('success', 'Producto actualizado exitosamente.'); // Cambiado a admin.productos.index
+        return redirect()->route('admin.productos.index')->with('success', 'Producto actualizado exitosamente.');
     }
 
     /**
@@ -190,13 +233,13 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        $this->authorize('delete', $producto); // Autoriza eliminar este producto (solo admins)
+        $this->authorize('delete', $producto);
 
         if ($producto->imagen) {
             Storage::disk('public')->delete($producto->imagen);
         }
         $producto->delete();
         Log::info('ProductoController@destroy: Producto ' . $producto->nombre . ' eliminado por ' . Auth::user()->email . '. ID: ' . $producto->id);
-        return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado exitosamente.'); // Cambiado a admin.productos.index
+        return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado exitosamente.');
     }
 }

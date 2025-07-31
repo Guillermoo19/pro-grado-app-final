@@ -11,7 +11,7 @@
     'url' => 'http://localhost',
     'frontend_url' => 'http://localhost:3000',
     'asset_url' => NULL,
-    'timezone' => 'UTC',
+    'timezone' => 'America/Guayaquil',
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',

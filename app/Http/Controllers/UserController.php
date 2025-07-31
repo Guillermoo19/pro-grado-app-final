@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role; // We need the Role model for the edit form
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -12,58 +13,58 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     /**
-     * Muestra una lista de todos los usuarios.
+     * Displays a list of all users.
      */
     public function index()
     {
-        // Carga la relación 'role' para poder acceder a $user->role->name
-        $users = User::with('role')->where('id', '!=', Auth::id())
-                     ->where('id', '!=', 1) // Asume que el super admin tiene ID 1
-                     ->orderBy('name')
-                     ->get();
+        $this->authorize('viewAny', User::class); // Authorize viewing the list of users
 
-        // Si el usuario autenticado es el super admin, puede verse a sí mismo en la lista
-        // y también puede ver al usuario con ID 1 (el super admin)
+        // If the authenticated user is the super admin, they can see everyone.
+        // Otherwise, they only see users who are not super admin and not themselves.
         if (Auth::user()->isSuperAdmin()) {
             $users = User::with('role')->orderBy('name')->get();
+        } else {
+            // A regular admin cannot see themselves or the super admin
+            $users = User::with('role')
+                         ->where('id', '!=', Auth::id())
+                         ->where('id', '!=', 1) // Assumes super admin has ID 1
+                         ->orderBy('name')
+                         ->get();
         }
 
         return view('admin.users.index', compact('users'));
     }
 
     /**
-     * Muestra los detalles de un usuario específico.
+     * Displays the details of a specific user.
+     * Redirects to the edit form as we don't have a separate 'show' view.
      */
     public function show(User $user)
     {
+        $this->authorize('view', $user); // Authorize viewing this specific user
         return redirect()->route('admin.users.edit', $user->id);
     }
 
     /**
-     * Muestra el formulario para editar un usuario existente.
+     * Displays the form for editing an existing user.
      */
     public function edit(User $user)
     {
-        // Restricción: Un admin normal no puede editar al super admin (ID 1)
-        if ($user->isSuperAdmin() && !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.users.index')->with('error', 'No tienes permiso para editar al administrador general.');
-        }
+        $this->authorize('update', $user); // Authorize updating this specific user
 
-        // Carga la relación 'role' para la vista
+        // Load the 'role' relationship for the view
         $user->load('role');
+        $roles = Role::all(); // We need all roles for the dropdown
 
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     /**
-     * Actualiza la información de un usuario en la base de datos.
+     * Updates a user's information in the database.
      */
     public function update(Request $request, User $user)
     {
-        // Restricción: Un admin normal no puede editar al super admin (ID 1)
-        if ($user->isSuperAdmin() && !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.users.index')->with('error', 'No tienes permiso para editar al administrador general.');
-        }
+        $this->authorize('update', $user); // Authorize updating this specific user
 
         $rules = [
             'name' => 'required|string|max:255',
@@ -77,9 +78,9 @@ class UserController extends Controller
             'phone_number' => 'nullable|string|max:20',
         ];
 
-        // Solo el super admin puede cambiar el rol
+        // Only the super admin can change the role
         if (Auth::user()->isSuperAdmin()) {
-            $rules['role_id'] = ['required', 'integer', Rule::in([1, 2, 5])]; // Ajusta los IDs de rol si tienes más
+            $rules['role_id'] = ['required', 'integer', Rule::exists('roles', 'id')]; // Validate that role_id exists in the roles table
         }
 
         $request->validate($rules);
@@ -88,33 +89,25 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->phone_number = $request->phone_number;
 
-        // Solo el super admin puede cambiar el rol
+        // Only the super admin can change the role
         if (Auth::user()->isSuperAdmin()) {
-            $user->role_id = $request->role_id; // <-- ¡IMPORTANTE! Cambiado a role_id
+            $user->role_id = $request->role_id;
         }
 
         $user->save();
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
     /**
-     * Elimina un usuario de la base de datos.
+     * Deletes a user from the database.
      */
     public function destroy(User $user)
     {
-        // Restricción: No permitir que un admin se elimine a sí mismo
-        if ($user->id === Auth::id()) {
-            return back()->with('error', 'No puedes eliminar tu propia cuenta de usuario.');
-        }
-
-        // Restricción: No permitir que un admin normal elimine al super admin (ID 1)
-        if ($user->isSuperAdmin() && !Auth::user()->isSuperAdmin()) {
-            return back()->with('error', 'No tienes permiso para eliminar al administrador general.');
-        }
+        $this->authorize('delete', $user); // Authorize deleting this specific user
 
         $user->delete();
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado con éxito.');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 }

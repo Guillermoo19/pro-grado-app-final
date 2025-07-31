@@ -44,7 +44,8 @@
                                         <th scope="col" class="py-3 px-6"><?php echo e(__('Usuario')); ?></th>
                                         <th scope="col" class="py-3 px-6"><?php echo e(__('Fecha')); ?></th>
                                         <th scope="col" class="py-3 px-6"><?php echo e(__('Total')); ?></th>
-                                        <th scope="col" class="py-3 px-6"><?php echo e(__('Estado')); ?></th>
+                                        <th scope="col" class="py-3 px-6"><?php echo e(__('Estado Pedido')); ?></th> 
+                                        <th scope="col" class="py-3 px-6"><?php echo e(__('Estado Pago')); ?></th>   
                                         <th scope="col" class="py-3 px-6"><?php echo e(__('Acciones')); ?></th>
                                     </tr>
                                 </thead>
@@ -69,17 +70,28 @@
                                             </td>
                                             <td class="py-4 px-6">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                    <?php echo e($pedido->estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : ''); ?>
-
-                                                    <?php echo e($pedido->estado === 'completado' ? 'bg-green-100 text-green-800' : ''); ?>
-
-                                                    <?php echo e($pedido->estado === 'cancelado' ? 'bg-red-100 text-red-800' : ''); ?>">
-                                                    <?php echo e(ucfirst($pedido->estado)); ?>
+                                                    <?php if($pedido->estado_pedido === 'pendiente'): ?> bg-yellow-100 text-yellow-800
+                                                    <?php elseif($pedido->estado_pedido === 'en_preparacion'): ?> bg-blue-100 text-blue-800
+                                                    <?php elseif($pedido->estado_pedido === 'en_camino'): ?> bg-purple-100 text-purple-800
+                                                    <?php elseif($pedido->estado_pedido === 'entregado'): ?> bg-green-100 text-green-800
+                                                    <?php elseif($pedido->estado_pedido === 'cancelado'): ?> bg-red-100 text-red-800
+                                                    <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
+                                                    <?php echo e(ucfirst(str_replace('_', ' ', $pedido->estado_pedido))); ?>
 
                                                 </span>
                                             </td>
                                             <td class="py-4 px-6">
-                                                
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                    <?php if($pedido->estado_pago === 'pendiente'): ?> bg-yellow-100 text-yellow-800
+                                                    <?php elseif($pedido->estado_pago === 'pendiente_revision'): ?> bg-orange-100 text-orange-800
+                                                    <?php elseif($pedido->estado_pago === 'pagado'): ?> bg-green-100 text-green-800
+                                                    <?php elseif($pedido->estado_pago === 'rechazado'): ?> bg-red-100 text-red-800
+                                                    <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
+                                                    <?php echo e(ucfirst(str_replace('_', ' ', $pedido->estado_pago))); ?>
+
+                                                </span>
+                                            </td>
+                                            <td class="py-4 px-6">
                                                 <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="font-medium text-blue-600 hover:underline">
                                                     <?php echo e(__('Ver Detalles')); ?>
 

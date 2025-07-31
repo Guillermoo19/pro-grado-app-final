@@ -33,7 +33,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::Mh4abaimVe94Irj8',
+            '_route' => 'generated::Vz5umuQgLI14OFSo',
           ),
           1 => NULL,
           2 => 
@@ -53,7 +53,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::19qvNzvBTjprvQht',
+            '_route' => 'generated::aNUvbANQwBkUy72d',
           ),
           1 => NULL,
           2 => 
@@ -539,6 +539,26 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
+      '/admin/users' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.users.index',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
       '/register' => 
       array (
         0 => 
@@ -562,7 +582,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::MxhHKOSEGbbxm3XG',
+            '_route' => 'generated::JHrpnQRTn9nboLHU',
           ),
           1 => NULL,
           2 => 
@@ -598,7 +618,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::IGnX4yFyCBgFLyE5',
+            '_route' => 'generated::qqrCakOPQVsaZ687',
           ),
           1 => NULL,
           2 => 
@@ -728,7 +748,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::G38tu2881hl59pCU',
+            '_route' => 'generated::OlpRAaDen6LUFv7x',
           ),
           1 => NULL,
           2 => 
@@ -785,7 +805,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::d7sqF8HsvscNgQIH',
+            '_route' => 'generated::KnYOfqNqA6EsQkiB',
           ),
           1 => NULL,
           2 => 
@@ -802,7 +822,7 @@ app('router')->setCompiledRoutes(
     ),
     2 => 
     array (
-      0 => '{^(?|/productos/([^/]++)(*:26)|/checkout/(?|confirm/([^/]++)(*:62)|upload\\-proof/([^/]++)(*:91))|/mis\\-pedidos/([^/]++)(*:121)|/admin/(?|p(?|roductos/([^/]++)(?|(*:163)|/edit(*:176)|(*:184))|edidos/([^/]++)(*:208))|roles/([^/]++)(?|(*:234)|/edit(*:247)|(*:255))|categorias/([^/]++)(?|(*:286)|/edit(*:299)|(*:307))|ingredientes/([^/]++)(?|(*:340)|/edit(*:353)|(*:361)))|/reset\\-password/([^/]++)(*:396)|/verify\\-email/([^/]++)/([^/]++)(*:436)|/storage/(.*)(*:457))/?$}sDu',
+      0 => '{^(?|/productos/([^/]++)(*:26)|/checkout/(?|confirm/([^/]++)(*:62)|upload\\-proof/([^/]++)(*:91))|/mis\\-pedidos/([^/]++)(*:121)|/admin/(?|p(?|roductos/([^/]++)(?|(*:163)|/edit(*:176)|(*:184))|edidos/([^/]++)(?|(*:211)|/update\\-estado\\-p(?|edido(*:245)|ago(*:256))))|roles/([^/]++)(?|(*:284)|/edit(*:297)|(*:305))|categorias/([^/]++)(?|(*:336)|/edit(*:349)|(*:357))|ingredientes/([^/]++)(?|(*:390)|/edit(*:403)|(*:411))|users/([^/]++)(?|(*:437)|/edit(*:450)|(*:458)))|/reset\\-password/([^/]++)(*:493)|/verify\\-email/([^/]++)/([^/]++)(*:533)|/storage/(.*)(*:554))/?$}sDu',
     ),
     3 => 
     array (
@@ -985,7 +1005,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      208 => 
+      211 => 
       array (
         0 => 
         array (
@@ -1008,7 +1028,51 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      234 => 
+      245 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.pedidos.update_estado_pedido',
+          ),
+          1 => 
+          array (
+            0 => 'pedido',
+          ),
+          2 => 
+          array (
+            'PATCH' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      256 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.pedidos.update_estado_pago',
+          ),
+          1 => 
+          array (
+            0 => 'pedido',
+          ),
+          2 => 
+          array (
+            'PATCH' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      284 => 
       array (
         0 => 
         array (
@@ -1031,7 +1095,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      247 => 
+      297 => 
       array (
         0 => 
         array (
@@ -1054,7 +1118,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      255 => 
+      305 => 
       array (
         0 => 
         array (
@@ -1096,7 +1160,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      286 => 
+      336 => 
       array (
         0 => 
         array (
@@ -1119,7 +1183,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      299 => 
+      349 => 
       array (
         0 => 
         array (
@@ -1142,7 +1206,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      307 => 
+      357 => 
       array (
         0 => 
         array (
@@ -1184,7 +1248,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      340 => 
+      390 => 
       array (
         0 => 
         array (
@@ -1207,7 +1271,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      353 => 
+      403 => 
       array (
         0 => 
         array (
@@ -1230,7 +1294,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      361 => 
+      411 => 
       array (
         0 => 
         array (
@@ -1272,7 +1336,95 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      396 => 
+      437 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.users.show',
+          ),
+          1 => 
+          array (
+            0 => 'user',
+          ),
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      450 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.users.edit',
+          ),
+          1 => 
+          array (
+            0 => 'user',
+          ),
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      458 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.users.update',
+          ),
+          1 => 
+          array (
+            0 => 'user',
+          ),
+          2 => 
+          array (
+            'PUT' => 0,
+            'PATCH' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.users.destroy',
+          ),
+          1 => 
+          array (
+            0 => 'user',
+          ),
+          2 => 
+          array (
+            'DELETE' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      493 => 
       array (
         0 => 
         array (
@@ -1295,7 +1447,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      436 => 
+      533 => 
       array (
         0 => 
         array (
@@ -1319,7 +1471,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      457 => 
+      554 => 
       array (
         0 => 
         array (
@@ -1394,7 +1546,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::Mh4abaimVe94Irj8' => 
+    'generated::Vz5umuQgLI14OFSo' => 
     array (
       'methods' => 
       array (
@@ -1422,8 +1574,8 @@ app('router')->setCompiledRoutes(
                     return response(\\Illuminate\\Support\\Facades\\View::file(\'E:\\\\Proyecto de Grado\\\\Laravel\\\\pro-grado-app-final\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Configuration\'.\'/../resources/health-up.blade.php\', [
                         \'exception\' => $exception,
                     ]), status: $exception ? 500 : 200);
-                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000009870000000000000000";}}',
-        'as' => 'generated::Mh4abaimVe94Irj8',
+                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000005310000000000000000";}}',
+        'as' => 'generated::Vz5umuQgLI14OFSo',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1439,7 +1591,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::19qvNzvBTjprvQht' => 
+    'generated::aNUvbANQwBkUy72d' => 
     array (
       'methods' => 
       array (
@@ -1455,13 +1607,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:44:"function () {
     return \\view(\'welcome\');
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009c20000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009320000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
         array (
         ),
-        'as' => 'generated::19qvNzvBTjprvQht',
+        'as' => 'generated::aNUvbANQwBkUy72d',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1711,9 +1863,9 @@ app('router')->setCompiledRoutes(
           0 => 'web',
           1 => 'auth',
         ),
-        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:120:"function () {
-        return \\view(\'dashboard\'); // Asume que tienes un dashboard.blade.php para usuarios normales
-    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009990000000000000000";}}',
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:54:"function () {
+        return \\view(\'dashboard\');
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005400000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -2051,9 +2203,9 @@ app('router')->setCompiledRoutes(
           1 => 'auth',
           2 => 'can:access-admin',
         ),
-        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:139:"function () {
-            return \\view(\'admin.dashboard\'); // Asegúrate de que esta es la vista correcta para el admin dashboard
-        }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000000000097f0000000000000000";}}',
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:68:"function () {
+            return \\view(\'admin.dashboard\');
+        }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005290000000000000000";}}',
         'as' => 'admin.dashboard',
         'namespace' => NULL,
         'prefix' => '/admin',
@@ -3237,6 +3389,276 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
+    'admin.pedidos.update_estado_pedido' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'PATCH',
+      ),
+      'uri' => 'admin/pedidos/{pedido}/update-estado-pedido',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'uses' => 'App\\Http\\Controllers\\PedidoController@updateEstadoPedido',
+        'controller' => 'App\\Http\\Controllers\\PedidoController@updateEstadoPedido',
+        'as' => 'admin.pedidos.update_estado_pedido',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.pedidos.update_estado_pago' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'PATCH',
+      ),
+      'uri' => 'admin/pedidos/{pedido}/update-estado-pago',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'uses' => 'App\\Http\\Controllers\\PedidoController@updateEstadoPago',
+        'controller' => 'App\\Http\\Controllers\\PedidoController@updateEstadoPago',
+        'as' => 'admin.pedidos.update_estado_pago',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.users.index' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/users',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'as' => 'admin.users.index',
+        'uses' => 'App\\Http\\Controllers\\UserController@index',
+        'controller' => 'App\\Http\\Controllers\\UserController@index',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.users.show' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/users/{user}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'as' => 'admin.users.show',
+        'uses' => 'App\\Http\\Controllers\\UserController@show',
+        'controller' => 'App\\Http\\Controllers\\UserController@show',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.users.edit' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/users/{user}/edit',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'as' => 'admin.users.edit',
+        'uses' => 'App\\Http\\Controllers\\UserController@edit',
+        'controller' => 'App\\Http\\Controllers\\UserController@edit',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.users.update' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'PUT',
+        1 => 'PATCH',
+      ),
+      'uri' => 'admin/users/{user}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'as' => 'admin.users.update',
+        'uses' => 'App\\Http\\Controllers\\UserController@update',
+        'controller' => 'App\\Http\\Controllers\\UserController@update',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.users.destroy' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'DELETE',
+      ),
+      'uri' => 'admin/users/{user}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'can:access-admin',
+        ),
+        'as' => 'admin.users.destroy',
+        'uses' => 'App\\Http\\Controllers\\UserController@destroy',
+        'controller' => 'App\\Http\\Controllers\\UserController@destroy',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
     'register' => 
     array (
       'methods' => 
@@ -3275,7 +3697,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::MxhHKOSEGbbxm3XG' => 
+    'generated::JHrpnQRTn9nboLHU' => 
     array (
       'methods' => 
       array (
@@ -3296,7 +3718,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::MxhHKOSEGbbxm3XG',
+        'as' => 'generated::JHrpnQRTn9nboLHU',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3350,7 +3772,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::IGnX4yFyCBgFLyE5' => 
+    'generated::qqrCakOPQVsaZ687' => 
     array (
       'methods' => 
       array (
@@ -3371,7 +3793,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::IGnX4yFyCBgFLyE5',
+        'as' => 'generated::qqrCakOPQVsaZ687',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3691,7 +4113,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::G38tu2881hl59pCU' => 
+    'generated::OlpRAaDen6LUFv7x' => 
     array (
       'methods' => 
       array (
@@ -3712,7 +4134,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::G38tu2881hl59pCU',
+        'as' => 'generated::OlpRAaDen6LUFv7x',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3802,7 +4224,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::d7sqF8HsvscNgQIH' => 
+    'generated::KnYOfqNqA6EsQkiB' => 
     array (
       'methods' => 
       array (
@@ -3819,13 +4241,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:79:"function (\\Illuminate\\Http\\Request $request) {
     return $request->user();
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009c30000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009330000000000000000";}}',
         'namespace' => NULL,
         'prefix' => 'api',
         'where' => 
         array (
         ),
-        'as' => 'generated::d7sqF8HsvscNgQIH',
+        'as' => 'generated::KnYOfqNqA6EsQkiB',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3857,7 +4279,7 @@ app('router')->setCompiledRoutes(
                         $config,
                         $isProduction
                     ))($request, $path);
-                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"00000000000009860000000000000000";}}',
+                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"00000000000005300000000000000000";}}',
         'as' => 'storage.local',
       ),
       'fallback' => false,

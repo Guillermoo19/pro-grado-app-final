@@ -12,15 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pedidos', function (Blueprint $table) {
-            // Añadir la columna 'tipo_entrega' (ej. 'local', 'domicilio')
-            // Se coloca después de 'estado_pago' para mantener un orden lógico
-            $table->string('tipo_entrega')->default('local')->after('estado_pago');
-            
-            // Añadir la columna 'direccion_entrega' (nullable porque no aplica para 'local')
-            $table->string('direccion_entrega')->nullable()->after('tipo_entrega');
-            
-            // Añadir la columna 'telefono_contacto' (nullable porque puede venir del perfil del usuario o ser opcional)
-            $table->string('telefono_contacto')->nullable()->after('direccion_entrega');
+            // Estas columnas ya se crean en la migración principal de la tabla 'pedidos',
+            // por lo que no es necesario volver a crearlas aquí.
         });
     }
 

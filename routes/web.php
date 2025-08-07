@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
@@ -7,7 +8,8 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IngredienteController;
-use App\Http\Controllers\UserController; // Asegúrate de que este use esté aquí
+use App\Http\Controllers\Auth\UserController; // <-- ¡AQUÍ ESTÁ LA CORRECCIÓN!
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/pedidos/{pedido}/update-estado-pago', [PedidoController::class, 'updateEstadoPago'])->name('pedidos.update_estado_pago');
 
         // Rutas para Usuarios (Admin)
+        // Usamos la declaración "use" de arriba
         Route::resource('users', UserController::class)->except(['create', 'store']);
     });
 });

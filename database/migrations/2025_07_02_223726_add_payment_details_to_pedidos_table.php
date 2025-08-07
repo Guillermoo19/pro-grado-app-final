@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pedidos', function (Blueprint $table) {
-            // Columna para la URL del comprobante de pago (puede ser nula al principio)
-            $table->string('comprobante_imagen_url')->nullable()->after('estado');
-
-            // Columna para el estado del pago (ej. 'pendiente', 'verificado', 'rechazado')
-            // Por defecto será 'pendiente'
-            $table->string('estado_pago')->default('pendiente')->after('comprobante_imagen_url');
+            // Columna para la URL del comprobante de pago
+            // La agregamos después de 'estado_pedido'
+            $table->string('comprobante_imagen_url')->nullable()->after('estado_pedido');
+            
+            // La columna 'estado_pago' ya se crea en la migración de la tabla 'pedidos', así que la eliminamos de aquí
         });
     }
 
@@ -27,9 +26,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('pedidos', function (Blueprint $table) {
-            // Para revertir la migración, eliminamos las columnas
+            // Para revertir la migración, eliminamos la columna que agregamos
             $table->dropColumn('comprobante_imagen_url');
-            $table->dropColumn('estado_pago');
         });
     }
 };

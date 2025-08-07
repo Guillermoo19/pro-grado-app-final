@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // Para depuración
+use Illuminate\Support\Facades\Log;
 
 class PedidoController extends Controller
 {
@@ -32,12 +32,26 @@ class PedidoController extends Controller
 
     /**
      * Muestra la lista de todos los pedidos para el administrador.
+     * Esta es la versión modificada para mostrar dos listas.
      */
     public function adminIndex()
     {
         Log::info('PedidoController@adminIndex: Usuario ' . Auth::user()->email . ' ha accedido a la gestión de pedidos.');
-        $pedidos = Pedido::with('user')->orderBy('created_at', 'desc')->get(); // Carga también la relación de usuario
-        return view('admin.pedidos.index', compact('pedidos'));
+        
+        // Obtener pedidos pendientes o en proceso
+        $pedidosPendientes = Pedido::whereIn('estado_pedido', ['pendiente', 'en_preparacion', 'en_camino'])
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Obtener pedidos ya entregados y pagados
+        $pedidosCompletados = Pedido::where('estado_pedido', 'entregado')
+            ->where('estado_pago', 'pagado')
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.pedidos.index', compact('pedidosPendientes', 'pedidosCompletados'));
     }
 
     /**
@@ -46,7 +60,6 @@ class PedidoController extends Controller
     public function adminShow(Pedido $pedido)
     {
         // El middleware 'can:access-admin' ya protege esta ruta, así que no necesitamos una verificación de usuario aquí.
-        // Carga la relación 'productos' para acceder a los detalles del pedido
         $pedido->load('productos');
         return view('admin.pedidos.show', compact('pedido'));
     }

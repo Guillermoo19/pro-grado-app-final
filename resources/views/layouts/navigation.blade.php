@@ -47,6 +47,11 @@
                             <x-nav-link :href="route('admin.ingredientes.index')" :active="request()->routeIs('admin.ingredientes.index')">
                                 {{ __('Ingredientes') }}
                             </x-nav-link>
+                            {{-- INICIO DEL CAMBIO --}}
+                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                                {{ __('Gestión de Usuarios') }}
+                            </x-nav-link>
+                            {{-- FIN DEL CAMBIO --}}
                         @endif
                     @else
                         {{-- Enlaces para usuarios NO autenticados (invitados) --}}
@@ -157,6 +162,11 @@
                     <x-responsive-nav-link :href="route('admin.ingredientes.index')" :active="request()->routeIs('admin.ingredientes.index')">
                         {{ __('Ingredientes') }}
                     </x-responsive-nav-link>
+                    {{-- INICIO DEL CAMBIO RESPONSIVE --}}
+                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                        {{ __('Gestión de Usuarios') }}
+                    </x-responsive-nav-link>
+                    {{-- FIN DEL CAMBIO RESPONSIVE --}}
                 @endif
             @else
                 {{-- Enlaces para usuarios NO autenticados (invitados) (Responsive) --}}

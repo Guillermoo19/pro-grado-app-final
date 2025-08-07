@@ -9,83 +9,132 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-2xl font-bold mb-6 text-chamos-marron-oscuro">{{ __('Todos los Pedidos') }}</h3>
-
-                    @if (session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {{-- Pedidos Pendientes (Lado Izquierdo) --}}
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-4">Pedidos Pendientes</h2>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    ID Pedido
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Usuario
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Total
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Estado Pedido
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Estado Pago
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($pedidosPendientes as $pedido)
+                                                <tr>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ $pedido->id }}</td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">${{ number_format($pedido->total, 2) }}</td>
+                                                    <td class="py-4 px-6">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                            @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
+                                                            @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
+                                                            @elseif ($pedido->estado_pedido === 'en_camino') bg-purple-100 text-purple-800
+                                                            @elseif ($pedido->estado_pedido === 'entregado') bg-green-100 text-green-800
+                                                            @elseif ($pedido->estado_pedido === 'cancelado') bg-red-100 text-red-800
+                                                            @else bg-gray-100 text-gray-800 @endif">
+                                                            {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="py-4 px-6">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                            @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
+                                                            @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
+                                                            @elseif ($pedido->estado_pago === 'pagado') bg-green-100 text-green-800
+                                                            @elseif ($pedido->estado_pago === 'rechazado') bg-red-100 text-red-800
+                                                            @else bg-gray-100 text-gray-800 @endif">
+                                                            {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                        <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center text-gray-500">
+                                                        No hay pedidos pendientes por revisar.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    @endif
 
-                    @if (session('error'))
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <span class="block sm:inline">{{ session('error') }}</span>
+                        {{-- Pedidos Completados (Lado Derecho) --}}
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-4">Pedidos Completados</h2>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    ID Pedido
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Usuario
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Total
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Estado
+                                                </th>
+                                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($pedidosCompletados as $pedido)
+                                                <tr>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ $pedido->id }}</td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">${{ number_format($pedido->total, 2) }}</td>
+                                                    <td class="py-4 px-6">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                            Entregado y Pagado
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                        <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5" class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center text-gray-500">
+                                                        No hay pedidos completados.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    @endif
-
-                    @if ($pedidos->isEmpty())
-                        <p class="text-gray-600">{{ __('No hay pedidos registrados.') }}</p>
-                    @else
-                        <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-                            <table class="w-full text-sm text-left text-gray-500">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                    <tr>
-                                        <th scope="col" class="py-3 px-6">{{ __('ID Pedido') }}</th>
-                                        <th scope="col" class="py-3 px-6">{{ __('Usuario') }}</th>
-                                        <th scope="col" class="py-3 px-6">{{ __('Fecha') }}</th>
-                                        <th scope="col" class="py-3 px-6">{{ __('Total') }}</th>
-                                        <th scope="col" class="py-3 px-6">{{ __('Estado Pedido') }}</th> {{-- Cambiado el nombre de la columna --}}
-                                        <th scope="col" class="py-3 px-6">{{ __('Estado Pago') }}</th>   {{-- Nueva columna --}}
-                                        <th scope="col" class="py-3 px-6">{{ __('Acciones') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($pedidos as $pedido)
-                                        <tr class="bg-white border-b hover:bg-gray-50">
-                                            <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
-                                                {{ $pedido->id }}
-                                            </th>
-                                            <td class="py-4 px-6">
-                                                {{ $pedido->user->name ?? 'N/A' }}
-                                            </td>
-                                            <td class="py-4 px-6">
-                                                {{ $pedido->created_at->format('d/m/Y H:i') }}
-                                            </td>
-                                            <td class="py-4 px-6">
-                                                ${{ number_format($pedido->total, 2) }}
-                                            </td>
-                                            <td class="py-4 px-6">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                    @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
-                                                    @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
-                                                    @elseif ($pedido->estado_pedido === 'en_camino') bg-purple-100 text-purple-800
-                                                    @elseif ($pedido->estado_pedido === 'entregado') bg-green-100 text-green-800
-                                                    @elseif ($pedido->estado_pedido === 'cancelado') bg-red-100 text-red-800
-                                                    @else bg-gray-100 text-gray-800 @endif">
-                                                    {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
-                                                </span>
-                                            </td>
-                                            <td class="py-4 px-6">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                    @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
-                                                    @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
-                                                    @elseif ($pedido->estado_pago === 'pagado') bg-green-100 text-green-800
-                                                    @elseif ($pedido->estado_pago === 'rechazado') bg-red-100 text-red-800
-                                                    @else bg-gray-100 text-gray-800 @endif">
-                                                    {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
-                                                </span>
-                                            </td>
-                                            <td class="py-4 px-6">
-                                                <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="font-medium text-blue-600 hover:underline">
-                                                    {{ __('Ver Detalles') }}
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>

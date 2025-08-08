@@ -8,8 +8,9 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IngredienteController;
-use App\Http\Controllers\Auth\UserController; // <-- ¡AQUÍ ESTÁ LA CORRECCIÓN!
-
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\CheckoutController; // Deja esta línea también, por si acaso
 
 /*
 |--------------------------------------------------------------------------
@@ -52,8 +53,9 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de Checkout (requieren autenticación)
     Route::post('/carrito/checkout', [CarritoController::class, 'checkout'])->name('carrito.checkout');
-    Route::get('/checkout/confirm/{pedidoId}', [CarritoController::class, 'confirm'])->name('checkout.confirm');
-    Route::post('/checkout/upload-proof/{pedido}', [CarritoController::class, 'uploadProof'])->name('checkout.upload_proof');
+    // Rutas corregidas para usar la ruta completa de la clase
+    Route::get('/checkout/confirm/{pedido}', [\App\Http\Controllers\CheckoutController::class, 'confirm'])->name('checkout.confirm');
+    Route::post('/checkout/upload-proof/{pedido}', [\App\Http\Controllers\CheckoutController::class, 'uploadProof'])->name('checkout.upload_proof');
 
     // Rutas de Pedidos para el cliente (Mis Pedidos)
     Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
@@ -89,6 +91,10 @@ Route::middleware('auth')->group(function () {
         // Rutas para Usuarios (Admin)
         // Usamos la declaración "use" de arriba
         Route::resource('users', UserController::class)->except(['create', 'store']);
+
+        // Rutas para la Configuración del Establecimiento
+        Route::get('/configuracion', [ConfiguracionController::class, 'edit'])->name('configuracion.edit');
+        Route::put('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
     });
 });
 

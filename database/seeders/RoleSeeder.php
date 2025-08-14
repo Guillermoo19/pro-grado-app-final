@@ -8,10 +8,12 @@ use App\Models\Role;
 
 class RoleSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        Role::firstOrCreate(['nombre' => 'admin']); // <-- DEBE SER 'nombre'
-        Role::firstOrCreate(['nombre' => 'cliente']); // <-- DEBE SER 'nombre'
+        Role::firstOrCreate(['nombre' => 'admin']);
         $this->command->info('Roles creados correctamente!');
     }
 }

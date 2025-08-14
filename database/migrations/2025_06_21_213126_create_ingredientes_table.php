@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('ingredientes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre')->unique();
-            $table->text('descripcion')->nullable(); // ¡ESTA LÍNEA ES CRUCIAL Y DEBE ESTAR AQUÍ!
+            $table->decimal('precio', 8, 2)->default(0.00); // Agregamos la columna de precio aquí
+            $table->text('descripcion')->nullable();
             $table->timestamps();
         });
     }

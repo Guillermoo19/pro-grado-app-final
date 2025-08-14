@@ -170,12 +170,14 @@
                 @endif
             @else
                 {{-- Enlaces para usuarios NO autenticados (invitados) (Responsive) --}}
-                <x-responsive-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
-                    {{ __('Menú') }} {{-- CAMBIO: Catálogo a Menú --}}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')">
-                    {{ __('Carrito') }}
-                </x-responsive-nav-link>
+                <div class="pt-2 pb-3 space-y-1">
+                    <x-responsive-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
+                        {{ __('Menú') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')">
+                        {{ __('Carrito') }}
+                    </x-responsive-nav-link>
+                </div>
             @endauth
         </div>
 

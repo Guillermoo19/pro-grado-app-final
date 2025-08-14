@@ -43,6 +43,25 @@
                     <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>Tipo de Cuenta:</strong> <?php echo e($configuracion->tipo_cuenta ?? 'N/A'); ?></p>
                 </div>
 
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-3"><?php echo e(__('Productos en tu Pedido')); ?></h4>
+                    <ul>
+                        <?php $__currentLoopData = $pedido->detalles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detalle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li class="mb-2">
+                                <span class="font-bold"><?php echo e($detalle->cantidad); ?>x <?php echo e($detalle->producto->nombre); ?></span> - $<?php echo e(number_format($detalle->subtotal, 2)); ?>
+
+                                <?php if($detalle->ingredientes_adicionales): ?>
+                                    <ul class="ml-4 list-disc list-inside text-gray-600 dark:text-gray-400">
+                                        <?php $__currentLoopData = $detalle->ingredientes_adicionales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ingrediente): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <li>+ <?php echo e($ingrediente['nombre']); ?> ($<?php echo e(number_format($ingrediente['precio'], 2)); ?>)</li>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+
                 <h3 class="text-2xl font-bold mb-6 text-chamos-marron-oscuro dark:text-white"><?php echo e(__('Subir Comprobante de Pago y Detalles de Entrega')); ?></h3>
                 <p class="text-gray-700 dark:text-gray-300 mb-4">Por favor, sube una imagen (JPG, PNG, GIF, SVG) o PDF de tu comprobante de transferencia.</p>
 

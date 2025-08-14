@@ -56,30 +56,39 @@
 
                                     <div class="flex-grow">
                                         <h4 class="text-lg font-semibold text-gray-800"><?php echo e($item['nombre']); ?></h4>
-                                        
-                                        
                                         <p class="text-md font-medium text-gray-700">$<?php echo e(number_format($item['precio'], 2)); ?> x <?php echo e($item['cantidad']); ?></p>
+
+                                        
+                                        <?php if(count($item['ingredientes_adicionales']) > 0): ?>
+                                            <div class="mt-2 text-sm text-gray-500">
+                                                <p class="font-semibold">Ingredientes Adicionales:</p>
+                                                <ul class="list-disc list-inside">
+                                                    <?php $__currentLoopData = $item['ingredientes_adicionales']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ingrediente): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <li><?php echo e($ingrediente->nombre); ?> ($<?php echo e(number_format($ingrediente->precio, 2)); ?>)</li>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </ul>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
 
-                                    <div class="flex items-center space-x-3 ml-4">
-                                        
-                                        <form action="<?php echo e(route('carrito.update')); ?>" method="POST" class="flex items-center">
-                                            <?php echo csrf_field(); ?>
-                                            <input type="hidden" name="producto_id" value="<?php echo e($item['id']); ?>">
-                                            <input type="number" name="cantidad" value="<?php echo e($item['cantidad']); ?>" min="1" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
-                                            <button type="submit" 
-                                                    style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
-                                                    onmouseover="this.style.color='#0056b3'" 
-                                                    onmouseout="this.style.color='#007bff'">
-                                                Actualizar
-                                            </button>
-                                        </form>
-
-                                        
+                                    <div class="flex flex-col items-end space-y-2 ml-4">
+                                        <p class="font-bold text-lg text-gray-900">$<?php echo e(number_format($item['subtotal'], 2)); ?></p>
+                                        <div class="flex items-center space-x-2">
+                                             
+                                            <form action="<?php echo e(route('carrito.update')); ?>" method="POST" class="flex items-center">
+                                                <?php echo csrf_field(); ?>
+                                                <input type="hidden" name="item_key" value="<?php echo e($item['item_key']); ?>">
+                                                <input type="number" name="cantidad" value="<?php echo e($item['cantidad']); ?>" min="0" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
+                                                <button type="submit" class="ml-2 px-3 py-1 bg-chamos-verde text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                                    Actualizar
+                                                </button>
+                                            </form>
+                                        </div>
+                                         
                                         <form action="<?php echo e(route('carrito.remove')); ?>" method="POST">
                                             <?php echo csrf_field(); ?>
-                                            <input type="hidden" name="producto_id" value="<?php echo e($item['id']); ?>">
-                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                            <input type="hidden" name="item_key" value="<?php echo e($item['item_key']); ?>">
+                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                                 Eliminar
                                             </button>
                                         </form>
@@ -91,7 +100,6 @@
                         
                         <div class="flex flex-col sm:flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200 relative">
                             <h4 class="text-xl font-bold text-gray-900 mb-4 sm:mb-0"><?php echo e(__('Total del Carrito:')); ?> $<?php echo e(number_format($total, 2)); ?></h4>
-                            
                             
                             <div class="ml-auto relative z-10">
                                 <form id="checkoutForm" action="<?php echo e(route('carrito.checkout')); ?>" method="POST">

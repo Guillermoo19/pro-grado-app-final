@@ -8,9 +8,9 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IngredienteController;
-use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Admin\UserController; // Se ha corregido para apuntar al controlador de Admin
 use App\Http\Controllers\ConfiguracionController;
-use App\Http\Controllers\CheckoutController; // Deja esta línea también, por si acaso
+use App\Http\Controllers\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,9 +53,8 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de Checkout (requieren autenticación)
     Route::post('/carrito/checkout', [CarritoController::class, 'checkout'])->name('carrito.checkout');
-    // Rutas corregidas para usar la ruta completa de la clase
-    Route::get('/checkout/confirm/{pedido}', [\App\Http\Controllers\CheckoutController::class, 'confirm'])->name('checkout.confirm');
-    Route::post('/checkout/upload-proof/{pedido}', [\App\Http\Controllers\CheckoutController::class, 'uploadProof'])->name('checkout.upload_proof');
+    Route::get('/checkout/confirm/{pedido}', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
+    Route::post('/checkout/upload-proof/{pedido}', [CheckoutController::class, 'uploadProof'])->name('checkout.upload_proof');
 
     // Rutas de Pedidos para el cliente (Mis Pedidos)
     Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
@@ -63,7 +62,6 @@ Route::middleware('auth')->group(function () {
 
 
     // Rutas de Administración (Solo para usuarios con rol 'admin')
-    // El middleware 'can:access-admin' se aplicará al grupo de rutas 'admin'
     Route::middleware(['can:access-admin'])->prefix('admin')->name('admin.')->group(function () {
         // Dashboard de Administración
         Route::get('/dashboard', function () {
@@ -89,8 +87,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/pedidos/{pedido}/update-estado-pago', [PedidoController::class, 'updateEstadoPago'])->name('pedidos.update_estado_pago');
 
         // Rutas para Usuarios (Admin)
-        // Usamos la declaración "use" de arriba
-        Route::resource('users', UserController::class)->except(['create', 'store']);
+        // Se ha quitado la excepción para que se generen todas las rutas
+        Route::resource('users', UserController::class); 
+        Route::patch('users/{user}/role', [UserController::class, 'updateRole'])->name('users.update_role');
 
         // Rutas para la Configuración del Establecimiento
         Route::get('/configuracion', [ConfiguracionController::class, 'edit'])->name('configuracion.edit');
@@ -98,5 +97,5 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Incluye las rutas de autenticación de Breeze (login, register, reset password, etc.)
+// Incluye las rutas de autenticación de Breeze
 require __DIR__.'/auth.php';

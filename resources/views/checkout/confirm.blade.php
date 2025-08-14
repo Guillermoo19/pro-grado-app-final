@@ -33,6 +33,24 @@
                     <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>Tipo de Cuenta:</strong> {{ $configuracion->tipo_cuenta ?? 'N/A' }}</p>
                 </div>
 
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-3">{{ __('Productos en tu Pedido') }}</h4>
+                    <ul>
+                        @foreach($pedido->detalles as $detalle)
+                            <li class="mb-2">
+                                <span class="font-bold">{{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}</span> - ${{ number_format($detalle->subtotal, 2) }}
+                                @if ($detalle->ingredientes_adicionales)
+                                    <ul class="ml-4 list-disc list-inside text-gray-600 dark:text-gray-400">
+                                        @foreach($detalle->ingredientes_adicionales as $ingrediente)
+                                            <li>+ {{ $ingrediente['nombre'] }} (${{ number_format($ingrediente['precio'], 2) }})</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
                 <h3 class="text-2xl font-bold mb-6 text-chamos-marron-oscuro dark:text-white">{{ __('Subir Comprobante de Pago y Detalles de Entrega') }}</h3>
                 <p class="text-gray-700 dark:text-gray-300 mb-4">Por favor, sube una imagen (JPG, PNG, GIF, SVG) o PDF de tu comprobante de transferencia.</p>
 

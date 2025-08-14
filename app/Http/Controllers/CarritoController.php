@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Pedido;
 use App\Models\DetallePedido;
+use App\Models\Ingrediente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -18,31 +19,43 @@ class CarritoController extends Controller
      */
     public function index()
     {
-        // Obtener el carrito de la sesión. Si no existe, es un array vacío.
         $carrito = Session::get('carrito', []);
         $productosEnCarrito = [];
         $total = 0;
 
-        // Iterar sobre los ítems del carrito para obtener los detalles del producto
-        // y calcular el subtotal de cada uno y el total general.
-        foreach ($carrito as $id => $item) {
-            $producto = Producto::find($id); // Recupera el producto completo de la DB
+        foreach ($carrito as $itemKey => $item) {
+            $producto = Producto::find($item['id']);
 
             if ($producto) {
                 $subtotalItem = $producto->precio * $item['cantidad'];
+                
+                $ingredientesAdicionales = [];
+                // Se cargan los objetos de ingredientes para mostrarlos en la vista
+                if (isset($item['ingredientes']) && is_array($item['ingredientes'])) {
+                    foreach ($item['ingredientes'] as $ingredienteId) {
+                        $ingrediente = Ingrediente::find($ingredienteId);
+                        if ($ingrediente) {
+                            $subtotalItem += $ingrediente->precio;
+                            $ingredientesAdicionales[] = $ingrediente;
+                        }
+                    }
+                }
+                
                 $total += $subtotalItem;
 
                 $productosEnCarrito[] = [
+                    'item_key' => $itemKey,
                     'id' => $producto->id,
                     'nombre' => $producto->nombre,
                     'precio' => $producto->precio,
                     'cantidad' => $item['cantidad'],
-                    'imagen' => $producto->imagen, // Asegúrate de que la imagen se carga
+                    'imagen' => $producto->imagen,
                     'subtotal' => $subtotalItem,
+                    'ingredientes_adicionales' => $ingredientesAdicionales,
                 ];
             } else {
-                // Si el producto no se encuentra (ej. fue eliminado), lo quitamos del carrito
-                Session::forget("carrito.$id");
+                // Si el producto no se encuentra, lo eliminamos del carrito
+                Session::forget("carrito.$itemKey");
             }
         }
 
@@ -55,8 +68,9 @@ class CarritoController extends Controller
     public function agregar(Request $request)
     {
         $productoId = $request->input('producto_id');
-        $cantidad = $request->input('cantidad');
-
+        $cantidad = $request->input('cantidad', 1);
+        $ingredientesIds = $request->input('ingredientes', []); 
+        
         $producto = Producto::find($productoId);
 
         if (!$producto) {
@@ -67,24 +81,26 @@ class CarritoController extends Controller
             return back()->with('error', 'La cantidad debe ser al menos 1.');
         }
 
-        // Obtener el carrito actual de la sesión
         $carrito = Session::get('carrito', []);
 
-        // Si el producto ya está en el carrito, actualiza la cantidad
-        if (isset($carrito[$productoId])) {
-            $carrito[$productoId]['cantidad'] += $cantidad;
+        // Generar una clave única para el item que incluye el producto y los ingredientes.
+        // Esto evita que un producto con ingredientes se confunda con uno sin ellos.
+        $ingredientesKey = implode('-', $ingredientesIds);
+        $itemKey = $productoId . ($ingredientesKey ? '-' . $ingredientesKey : '');
+
+        if (isset($carrito[$itemKey])) {
+            $carrito[$itemKey]['cantidad'] += $cantidad;
         } else {
-            // Si no está, añade el producto con sus detalles
-            $carrito[$productoId] = [
+            $carrito[$itemKey] = [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
-                'imagen' => $producto->imagen, // Guarda la imagen para mostrarla en el carrito
+                'imagen' => $producto->imagen, 
                 'cantidad' => $cantidad,
+                'ingredientes' => $ingredientesIds,
             ];
         }
 
-        // Guardar el carrito actualizado en la sesión
         Session::put('carrito', $carrito);
 
         return back()->with('success', 'Producto agregado al carrito.');
@@ -95,28 +111,22 @@ class CarritoController extends Controller
      */
     public function actualizar(Request $request)
     {
-        $productoId = $request->input('producto_id');
+        $itemKey = $request->input('item_key');
         $cantidad = $request->input('cantidad');
 
         $carrito = Session::get('carrito', []);
 
-        if (!isset($carrito[$productoId])) {
+        if (!isset($carrito[$itemKey])) {
             return back()->with('error', 'Producto no encontrado en el carrito.');
         }
 
         if ($cantidad <= 0) {
-            // Si la cantidad es 0 o menos, eliminamos el producto del carrito
-            unset($carrito[$productoId]);
+            unset($carrito[$itemKey]);
             Session::put('carrito', $carrito);
             return back()->with('success', 'Producto eliminado del carrito.');
         }
 
-        $producto = Producto::find($productoId);
-        if (!$producto) {
-            return back()->with('error', 'Producto no encontrado.');
-        }
-
-        $carrito[$productoId]['cantidad'] = $cantidad;
+        $carrito[$itemKey]['cantidad'] = $cantidad;
         Session::put('carrito', $carrito);
 
         return back()->with('success', 'Cantidad del producto actualizada.');
@@ -127,12 +137,12 @@ class CarritoController extends Controller
      */
     public function eliminar(Request $request)
     {
-        $productoId = $request->input('producto_id');
+        $itemKey = $request->input('item_key');
 
         $carrito = Session::get('carrito', []);
 
-        if (isset($carrito[$productoId])) {
-            unset($carrito[$productoId]);
+        if (isset($carrito[$itemKey])) {
+            unset($carrito[$itemKey]);
             Session::put('carrito', $carrito);
             return back()->with('success', 'Producto eliminado del carrito.');
         }
@@ -151,61 +161,72 @@ class CarritoController extends Controller
             return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío.');
         }
 
-        // Calcular el total del pedido
-        $totalPedido = 0;
-        foreach ($carrito as $id => $item) {
-            $totalPedido += ($item['precio'] * $item['cantidad']);
-        }
-
-        // Iniciar una transacción de base de datos para asegurar la atomicidad
         DB::beginTransaction();
         try {
-            // Crear el pedido
-            $pedido = Pedido::create([
-                'user_id' => Auth::id(), // Asigna el ID del usuario autenticado
-                'total' => $totalPedido,
-                'estado_pedido' => 'pendiente', // Estado inicial del pedido
-                'estado_pago' => 'pendiente',   // Estado inicial del pago
-                'tipo_entrega' => $request->input('tipo_entrega', 'recoger_local'), // Obtener del request o default
-                'direccion_entrega' => $request->input('direccion_entrega'), // Obtener del request
-                'telefono_contacto' => $request->input('telefono_contacto'), // Obtener del request
-            ]);
+            $totalPedido = 0;
+            $itemsParaAdjuntar = [];
 
-            // Añadir los productos al detalle del pedido
-            foreach ($carrito as $id => $item) {
-                // Asegúrate de que el producto existe antes de intentar guardarlo
-                $producto = Producto::find($id);
+            foreach ($carrito as $item) {
+                $producto = Producto::find($item['id']);
                 if (!$producto) {
-                    throw new \Exception("Producto con ID $id no encontrado al procesar el checkout.");
+                    throw new \Exception("Producto con ID {$item['id']} no encontrado.");
                 }
 
-                // Calcular el subtotal para cada item del pedido
-                $subtotalItem = $item['precio'] * $item['cantidad'];
+                // Calcular el subtotal del ítem, incluyendo el precio del producto y los ingredientes
+                $totalItem = $producto->precio * $item['cantidad'];
+                
+                $ingredientesAdicionales = [];
+                if (isset($item['ingredientes']) && is_array($item['ingredientes'])) {
+                    foreach ($item['ingredientes'] as $ingredienteId) {
+                        $ingrediente = Ingrediente::find($ingredienteId);
+                        if ($ingrediente) {
+                            $totalItem += $ingrediente->precio;
+                            $ingredientesAdicionales[] = [
+                                'id' => $ingrediente->id,
+                                'nombre' => $ingrediente->nombre,
+                                'precio' => $ingrediente->precio,
+                            ];
+                        }
+                    }
+                }
 
-                // Adjuntar el producto al pedido con sus detalles
-                // Asegúrate de que tu modelo Pedido tiene una relación belongsToMany con Producto
-                // y que la tabla pivote es 'detalle_pedidos'
-                $pedido->productos()->attach($id, [
+                $totalPedido += $totalItem;
+
+                // Preparar los datos para adjuntar, ahora incluyendo el subtotal
+                $itemsParaAdjuntar[$producto->id] = [
                     'cantidad' => $item['cantidad'],
-                    'precio_unitario' => $item['precio'],
-                    'subtotal' => $subtotalItem, // Aseguramos que subtotal se guarda
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                    'precio_unitario' => $producto->precio,
+                    'subtotal' => $totalItem, // <-- ¡Aquí está la corrección!
+                    'ingredientes_adicionales' => json_encode($ingredientesAdicionales),
+                ];
 
-                // Opcional: Actualizar el stock del producto
-                $producto->decrement('stock', $item['cantidad']);
+                // Decrementar el stock
+                if ($producto->stock !== null) {
+                    $producto->decrement('stock', $item['cantidad']);
+                }
             }
 
-            // Limpiar el carrito de la sesión
-            Session::forget('carrito');
+            // Crear el pedido con el total calculado
+            $pedido = Pedido::create([
+                'user_id' => Auth::id(),
+                'total' => $totalPedido,
+                'estado_pedido' => 'pendiente',
+                'estado_pago' => 'pendiente',
+                'tipo_entrega' => $request->input('tipo_entrega', 'recoger_local'),
+                'direccion_entrega' => $request->input('direccion_entrega'),
+                'telefono_contacto' => $request->input('telefono_contacto'),
+            ]);
 
-            DB::commit(); // Confirmar la transacción
+            // Adjuntar todos los productos al pedido a la vez
+            $pedido->productos()->attach($itemsParaAdjuntar);
+
+            Session::forget('carrito');
+            DB::commit();
 
             return redirect()->route('checkout.confirm', $pedido->id)->with('success', 'Pedido realizado con éxito. Por favor, sube tu comprobante de pago.');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Revertir la transacción en caso de error
+            DB::rollBack();
             Log::error("Error al procesar el checkout: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('carrito.index')->with('error', 'Hubo un error al procesar tu pedido: ' . $e->getMessage());
         }
@@ -225,9 +246,8 @@ class CarritoController extends Controller
      */
     public function uploadProof(Request $request, Pedido $pedido)
     {
-        // Añadir validación para los campos de entrega
         $rules = [
-            'proof_image' => 'required|image|mimes:jpeg,png,jpg,gif,pdf,svg|max:2048', // Permitir PDF y SVG
+            'proof_image' => 'required|image|mimes:jpeg,png,jpg,gif,pdf,svg|max:2048',
             'tipo_entrega' => 'required|in:recoger_local,domicilio',
         ];
 
@@ -240,7 +260,6 @@ class CarritoController extends Controller
 
         DB::beginTransaction();
         try {
-            // Actualizar los detalles del pedido
             $pedido->update([
                 'tipo_entrega' => $request->input('tipo_entrega'),
                 'direccion_entrega' => $request->input('direccion_entrega'),
@@ -251,7 +270,7 @@ class CarritoController extends Controller
                 $imagePath = $request->file('proof_image')->store('proofs', 'public');
                 $pedido->update([
                     'comprobante_url' => $imagePath,
-                    'estado_pago' => 'pendiente_revision', // Nuevo estado para pago subido
+                    'estado_pago' => 'pendiente_revision',
                 ]);
             }
 

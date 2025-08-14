@@ -47,17 +47,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Define la relación con el modelo Role.
-     * Un usuario pertenece a un rol.
      */
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    /**
-     * Define la relación con los pedidos del usuario.
-     * Un usuario puede tener muchos pedidos.
-     */
     public function pedidos()
     {
         return $this->hasMany(Pedido::class);
@@ -65,21 +60,29 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Verifica si el usuario tiene el rol de administrador.
-     * Utiliza la relación 'role' y el campo 'nombre' del rol.
-     *
-     * @return bool
      */
     public function isAdmin()
     {
+        // VERIFICACIÓN CORREGIDA POR ÚLTIMA VEZ:
+        // Basado en el nombre que se muestra en el menú,
+        // el nombre del rol en la base de datos es 'admin' (todo en minúsculas).
+        // Se corrige la comparación para que coincida.
         return $this->role && $this->role->nombre === 'admin';
     }
 
     /**
-     * Verifica si el usuario es el administrador general (super admin).
-     * Asumimos que el administrador general tiene el ID 1.
+     * Verifica si el usuario es un SuperAdmin.
      */
     public function isSuperAdmin()
     {
-        return $this->id === 1;
+        return $this->role && $this->role->nombre === 'superadmin';
+    }
+
+    /**
+     * Verifica si el usuario es un cliente.
+     */
+    public function isCliente()
+    {
+        return $this->role && $this->role->nombre === 'cliente';
     }
 }

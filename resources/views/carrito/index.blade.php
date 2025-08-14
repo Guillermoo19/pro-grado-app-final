@@ -45,30 +45,39 @@
 
                                     <div class="flex-grow">
                                         <h4 class="text-lg font-semibold text-gray-800">{{ $item['nombre'] }}</h4>
-                                        {{-- La descripción no está en el array del carrito, si la necesitas, cárgala desde el controlador --}}
-                                        {{-- <p class="text-sm text-gray-600 mb-2">{{ $item['descripcion'] }}</p> --}}
                                         <p class="text-md font-medium text-gray-700">${{ number_format($item['precio'], 2) }} x {{ $item['cantidad'] }}</p>
+
+                                        {{-- Muestra los ingredientes adicionales --}}
+                                        @if (count($item['ingredientes_adicionales']) > 0)
+                                            <div class="mt-2 text-sm text-gray-500">
+                                                <p class="font-semibold">Ingredientes Adicionales:</p>
+                                                <ul class="list-disc list-inside">
+                                                    @foreach ($item['ingredientes_adicionales'] as $ingrediente)
+                                                        <li>{{ $ingrediente->nombre }} (${{ number_format($ingrediente->precio, 2) }})</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </div>
 
-                                    <div class="flex items-center space-x-3 ml-4">
-                                        {{-- Formulario para actualizar cantidad --}}
-                                        <form action="{{ route('carrito.update') }}" method="POST" class="flex items-center">
-                                            @csrf
-                                            <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
-                                            <input type="number" name="cantidad" value="{{ $item['cantidad'] }}" min="1" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
-                                            <button type="submit" 
-                                                    style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
-                                                    onmouseover="this.style.color='#0056b3'" 
-                                                    onmouseout="this.style.color='#007bff'">
-                                                Actualizar
-                                            </button>
-                                        </form>
-
-                                        {{-- Formulario para eliminar producto --}}
+                                    <div class="flex flex-col items-end space-y-2 ml-4">
+                                        <p class="font-bold text-lg text-gray-900">${{ number_format($item['subtotal'], 2) }}</p>
+                                        <div class="flex items-center space-x-2">
+                                             {{-- Formulario para actualizar cantidad --}}
+                                            <form action="{{ route('carrito.update') }}" method="POST" class="flex items-center">
+                                                @csrf
+                                                <input type="hidden" name="item_key" value="{{ $item['item_key'] }}">
+                                                <input type="number" name="cantidad" value="{{ $item['cantidad'] }}" min="0" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
+                                                <button type="submit" class="ml-2 px-3 py-1 bg-chamos-verde text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                                    Actualizar
+                                                </button>
+                                            </form>
+                                        </div>
+                                         {{-- Formulario para eliminar producto --}}
                                         <form action="{{ route('carrito.remove') }}" method="POST">
                                             @csrf
-                                            <input type="hidden" name="producto_id" value="{{ $item['id'] }}">
-                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                            <input type="hidden" name="item_key" value="{{ $item['item_key'] }}">
+                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                                 Eliminar
                                             </button>
                                         </form>
@@ -81,7 +90,6 @@
                         <div class="flex flex-col sm:flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200 relative">
                             <h4 class="text-xl font-bold text-gray-900 mb-4 sm:mb-0">{{ __('Total del Carrito:') }} ${{ number_format($total, 2) }}</h4>
                             
-                            {{-- Formulario de Checkout REAL --}}
                             <div class="ml-auto relative z-10">
                                 <form id="checkoutForm" action="{{ route('carrito.checkout') }}" method="POST">
                                     @csrf

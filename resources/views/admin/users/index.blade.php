@@ -9,8 +9,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <!-- Se ha eliminado el div que contenía el botón "Crear Usuario" -->
+                    
+                    @if (session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
 
-                    {{-- SECCIÓN PARA ADMINISTRADORES --}}
+                    {{--
+                        SECCIÓN PARA ADMINISTRADORES
+                    --}}
                     <div class="mb-8">
                         <h3 class="text-xl font-bold mb-4">{{ __('Administradores') }}</h3>
                         @if($admins->isEmpty())
@@ -18,7 +27,7 @@
                         @else
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <thead class="bg-indigo-50 dark:bg-indigo-700">
                                         <tr>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -40,14 +49,13 @@
                                                         {{ optional($user->role)->nombre ?? 'Sin Rol' }}
                                                     </span>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
                                                     <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                    {{-- Solo mostrar el botón de eliminar si el usuario no es el mismo que está logueado --}}
                                                     @if (Auth::user()->id !== $user->id)
-                                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
+                                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600 ml-4">Eliminar</button>
+                                                            <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
                                                         </form>
                                                     @endif
                                                 </td>
@@ -59,71 +67,18 @@
                         @endif
                     </div>
 
-                    {{-- SECCIÓN PARA CLIENTES --}}
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4">{{ __('Clientes') }}</h3>
-                        @if($clients->isEmpty())
-                            <p class="text-gray-600 dark:text-gray-400">{{ __('No hay clientes registrados.') }}</p>
-                        @else
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teléfono</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rol</th>
-                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                        @foreach ($clients as $user)
-                                            <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->id }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->name }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->email }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->phone_number ?? 'N/A' }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
-                                                        {{ optional($user->role)->nombre ?? 'Sin Rol' }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                    {{-- Botón para convertir a administrador --}}
-                                                    @if (Auth::user()->id !== $user->id)
-                                                        <form action="{{ route('admin.users.update', $user) }}" method="POST" class="inline-block mx-4">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <input type="hidden" name="action" value="make_admin">
-                                                            <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600">Hacer Admin</button>
-                                                        </form>
-                                                    @endif
-                                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- SECCIÓN PARA OTROS ROLES (Chef, Cajero, etc.) --}}
+                    {{--
+                        SECCIÓN PARA OTROS ROLES
+                    --}}
                     @if($otherRoles->isNotEmpty())
                     <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4">{{ __('Otros Roles (Personal)') }}</h3>
-                        <p class="text-sm text-gray-400 mb-2">
-                             {{ __('Usuarios con roles distintos a Administrador o Cliente (ej. Chef, Cajero).') }}
+                        <h3 class="text-xl font-bold mb-4 text-yellow-500">{{ __('Otros Roles (Personal)') }}</h3>
+                        <p class="text-sm text-yellow-400 mb-2">
+                            {{ __('Usuarios con roles distintos a Administrador o Cliente (ej. Chef, Cajero).') }}
                         </p>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                <thead class="bg-yellow-50 dark:bg-yellow-800">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -141,26 +96,19 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->email }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->phone_number ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
                                                     {{ optional($user->role)->nombre ?? 'Sin Rol' }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                {{-- Botón para convertir a administrador --}}
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
+                                                <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Asignar Rol</a>
                                                 @if (Auth::user()->id !== $user->id)
-                                                    <form action="{{ route('admin.users.update', $user) }}" method="POST" class="inline-block mx-4">
+                                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
                                                         @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="action" value="make_admin">
-                                                        <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600">Hacer Admin</button>
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
                                                     </form>
                                                 @endif
-                                                <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -169,17 +117,19 @@
                         </div>
                     </div>
                     @endif
-
-                    {{-- SECCIÓN PARA USUARIOS SIN ROL ASIGNADO --}}
+                    
+                    {{--
+                        SECCIÓN PARA USUARIOS SIN ROL
+                    --}}
                     @if($noRoleUsers->isNotEmpty())
                     <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4 text-yellow-500">{{ __('Usuarios Sin Rol Asignado') }}</h3>
-                        <p class="text-sm text-yellow-400 mb-2">
-                           {{ __('Estos usuarios no tienen un rol definido y no se mostrarán en las tablas de clientes o administradores. Debes editar su perfil y asignarles un rol.') }}
+                        <h3 class="text-xl font-bold mb-4 text-red-500">{{ __('Usuarios Sin Rol') }}</h3>
+                        <p class="text-sm text-red-400 mb-2">
+                            {{ __('Estos usuarios aún no tienen un rol asignado y necesitan ser gestionados.') }}
                         </p>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-yellow-50 dark:bg-yellow-800">
+                                <thead class="bg-red-50 dark:bg-red-800">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -197,17 +147,19 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->email }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $user->phone_number ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
-                                                    {{ __('Sin Rol') }}
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                                                    {{ optional($user->role)->nombre ?? 'Sin Rol' }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
                                                 <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Asignar Rol</a>
-                                                <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block ml-4" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                </form>
+                                                @if (Auth::user()->id !== $user->id)
+                                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
+                                                    </form>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -216,6 +168,28 @@
                         </div>
                     </div>
                     @endif
+                    
+                    {{-- Se incluyen aquí los scripts para el modal de confirmación --}}
+                    <script>
+                        let currentForm;
+                        function showConfirmModal(form, message) {
+                            currentForm = form;
+                            document.getElementById('modal-message').innerText = message;
+                            document.getElementById('confirmModal').classList.remove('hidden');
+                        }
+
+                        function closeConfirmModal() {
+                            document.getElementById('confirmModal').classList.add('hidden');
+                        }
+
+                        document.getElementById('confirm-button').addEventListener('click', function() {
+                            if (currentForm) {
+                                currentForm.submit();
+                            }
+                            closeConfirmModal();
+                        });
+                    </script>
+                    
                 </div>
             </div>
         </div>

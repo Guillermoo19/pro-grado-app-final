@@ -12,6 +12,7 @@ class Ingrediente extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'precio', // <-- Agregamos el campo 'precio' aquí
     ];
 
     // Relación: Un ingrediente puede estar en muchos productos (Many-to-Many)

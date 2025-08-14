@@ -19,6 +19,13 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <!-- Se ha eliminado el div que contenía el botón "Crear Usuario" -->
+                    
+                    <?php if(session('success')): ?>
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline"><?php echo e(session('success')); ?></span>
+                        </div>
+                    <?php endif; ?>
 
                     
                     <div class="mb-8">
@@ -28,7 +35,7 @@
                         <?php else: ?>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <thead class="bg-indigo-50 dark:bg-indigo-700">
                                         <tr>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -51,72 +58,15 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
                                                     <a href="<?php echo e(route('admin.users.edit', $user)); ?>" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                    
                                                     <?php if(Auth::user()->id !== $user->id): ?>
-                                                        <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
+                                                        <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
                                                             <?php echo csrf_field(); ?>
                                                             <?php echo method_field('DELETE'); ?>
-                                                            <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600 ml-4">Eliminar</button>
+                                                            <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
                                                         </form>
                                                     <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4"><?php echo e(__('Clientes')); ?></h3>
-                        <?php if($clients->isEmpty()): ?>
-                            <p class="text-gray-600 dark:text-gray-400"><?php echo e(__('No hay clientes registrados.')); ?></p>
-                        <?php else: ?>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teléfono</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rol</th>
-                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                        <?php $__currentLoopData = $clients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->id); ?></td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->name); ?></td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->email); ?></td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->phone_number ?? 'N/A'); ?></td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
-                                                        <?php echo e(optional($user->role)->nombre ?? 'Sin Rol'); ?>
-
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <a href="<?php echo e(route('admin.users.edit', $user)); ?>" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                    
-                                                    <?php if(Auth::user()->id !== $user->id): ?>
-                                                        <form action="<?php echo e(route('admin.users.update', $user)); ?>" method="POST" class="inline-block mx-4">
-                                                            <?php echo csrf_field(); ?>
-                                                            <?php echo method_field('PATCH'); ?>
-                                                            <input type="hidden" name="action" value="make_admin">
-                                                            <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600">Hacer Admin</button>
-                                                        </form>
-                                                    <?php endif; ?>
-                                                    <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                        <?php echo csrf_field(); ?>
-                                                        <?php echo method_field('DELETE'); ?>
-                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                    </form>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -129,14 +79,14 @@
                     
                     <?php if($otherRoles->isNotEmpty()): ?>
                     <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4"><?php echo e(__('Otros Roles (Personal)')); ?></h3>
-                        <p class="text-sm text-gray-400 mb-2">
-                             <?php echo e(__('Usuarios con roles distintos a Administrador o Cliente (ej. Chef, Cajero).')); ?>
+                        <h3 class="text-xl font-bold mb-4 text-yellow-500"><?php echo e(__('Otros Roles (Personal)')); ?></h3>
+                        <p class="text-sm text-yellow-400 mb-2">
+                            <?php echo e(__('Usuarios con roles distintos a Administrador o Cliente (ej. Chef, Cajero).')); ?>
 
                         </p>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                <thead class="bg-yellow-50 dark:bg-yellow-800">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -154,27 +104,20 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->email); ?></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->phone_number ?? 'N/A'); ?></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
                                                     <?php echo e(optional($user->role)->nombre ?? 'Sin Rol'); ?>
 
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="<?php echo e(route('admin.users.edit', $user)); ?>" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Editar</a>
-                                                
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
+                                                <a href="<?php echo e(route('admin.users.edit', $user)); ?>" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Asignar Rol</a>
                                                 <?php if(Auth::user()->id !== $user->id): ?>
-                                                    <form action="<?php echo e(route('admin.users.update', $user)); ?>" method="POST" class="inline-block mx-4">
+                                                    <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
                                                         <?php echo csrf_field(); ?>
-                                                        <?php echo method_field('PATCH'); ?>
-                                                        <input type="hidden" name="action" value="make_admin">
-                                                        <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600">Hacer Admin</button>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
                                                     </form>
                                                 <?php endif; ?>
-                                                <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                    <?php echo csrf_field(); ?>
-                                                    <?php echo method_field('DELETE'); ?>
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                </form>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -183,18 +126,18 @@
                         </div>
                     </div>
                     <?php endif; ?>
-
+                    
                     
                     <?php if($noRoleUsers->isNotEmpty()): ?>
                     <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4 text-yellow-500"><?php echo e(__('Usuarios Sin Rol Asignado')); ?></h3>
-                        <p class="text-sm text-yellow-400 mb-2">
-                           <?php echo e(__('Estos usuarios no tienen un rol definido y no se mostrarán en las tablas de clientes o administradores. Debes editar su perfil y asignarles un rol.')); ?>
+                        <h3 class="text-xl font-bold mb-4 text-red-500"><?php echo e(__('Usuarios Sin Rol')); ?></h3>
+                        <p class="text-sm text-red-400 mb-2">
+                            <?php echo e(__('Estos usuarios aún no tienen un rol asignado y necesitan ser gestionados.')); ?>
 
                         </p>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-yellow-50 dark:bg-yellow-800">
+                                <thead class="bg-red-50 dark:bg-red-800">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre</th>
@@ -212,18 +155,20 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->email); ?></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300"><?php echo e($user->phone_number ?? 'N/A'); ?></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
-                                                    <?php echo e(__('Sin Rol')); ?>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                                                    <?php echo e(optional($user->role)->nombre ?? 'Sin Rol'); ?>
 
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end space-x-2">
                                                 <a href="<?php echo e(route('admin.users.edit', $user)); ?>" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600">Asignar Rol</a>
-                                                <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block ml-4" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
-                                                    <?php echo csrf_field(); ?>
-                                                    <?php echo method_field('DELETE'); ?>
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
-                                                </form>
+                                                <?php if(Auth::user()->id !== $user->id): ?>
+                                                    <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" method="POST" class="inline-block" onsubmit="event.preventDefault(); showConfirmModal(this, '¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">Eliminar</button>
+                                                    </form>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -232,6 +177,28 @@
                         </div>
                     </div>
                     <?php endif; ?>
+                    
+                    
+                    <script>
+                        let currentForm;
+                        function showConfirmModal(form, message) {
+                            currentForm = form;
+                            document.getElementById('modal-message').innerText = message;
+                            document.getElementById('confirmModal').classList.remove('hidden');
+                        }
+
+                        function closeConfirmModal() {
+                            document.getElementById('confirmModal').classList.add('hidden');
+                        }
+
+                        document.getElementById('confirm-button').addEventListener('click', function() {
+                            if (currentForm) {
+                                currentForm.submit();
+                            }
+                            closeConfirmModal();
+                        });
+                    </script>
+                    
                 </div>
             </div>
         </div>

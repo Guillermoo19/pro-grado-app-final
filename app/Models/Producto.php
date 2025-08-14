@@ -15,7 +15,7 @@ class Producto extends Model
         'precio',
         'stock',
         'categoria_id',
-        'imagen', // <-- ¡ASEGÚRATE DE QUE ESTA LÍNEA ESTÉ PRESENTE!
+        'imagen',
     ];
 
     // Relación: Un producto pertenece a una categoría
@@ -24,16 +24,22 @@ class Producto extends Model
         return $this->belongsTo(Categoria::class);
     }
 
-    // Relación: Un producto puede tener muchos ingredientes (Many-to-Many)
-    // Usamos withPivot para incluir las columnas 'cantidad' y 'unidad_medida' de la tabla pivote
-    public function ingredientes()
+    /**
+     * CORRECCIÓN: Se cambia el nombre de la relación a 'ingredientes'
+     * para que coincida con la llamada del controlador.
+     */
+    public function ingredientes() // Cambiado de 'ingredientesAdicionales' a 'ingredientes'
     {
         return $this->belongsToMany(Ingrediente::class, 'producto_ingrediente')
-                    ->withPivot('cantidad', 'unidad_medida')
-                    ->withTimestamps();
+                     ->withPivot('cantidad', 'unidad_medida')
+                     ->withTimestamps();
     }
-
-    // Relación: Un producto puede estar en muchos detalles de pedido (Many-to-Many a través de DetallePedido)
-    // No necesitamos una relación directa 'pedidos()' si usamos DetallePedido para los ítems del pedido.
-    // DetallePedido ya se encarga de la relación entre Producto y Pedido.
+    
+    // Nueva relación para el pedido, usando la tabla 'pedido_producto'
+    public function pedidos()
+    {
+        return $this->belongsToMany(Pedido::class, 'pedido_producto')
+                     ->withPivot(['cantidad', 'ingredientes_adicionales'])
+                     ->withTimestamps();
+    }
 }

@@ -57,9 +57,16 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
+        // Carga los ingredientes ya asociados con el producto (los predeterminados).
         $producto->load('ingredientes');
+
+        // Obtiene TODOS los ingredientes disponibles para el formulario de adiciones.
+        $ingredientes = Ingrediente::all();
+
         Log::info('ProductoController@show: Detalles de producto público accedidos para ID: ' . $producto->id . ' por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
-        return view('productos.show', compact('producto')); // Vista pública de detalles
+
+        // Pasa ambos, el producto y la lista de todos los ingredientes, a la vista.
+        return view('productos.show', compact('producto', 'ingredientes'));
     }
 
     /**
@@ -89,7 +96,8 @@ class ProductoController extends Controller
         $this->authorize('create', Producto::class);
 
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            // Agregamos la regla 'unique' para validar que el nombre no exista ya
+            'nombre' => 'required|string|max:255|unique:productos,nombre',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'stock' => 'required|integer|min:0',
@@ -100,6 +108,8 @@ class ProductoController extends Controller
         ],
         [
             'nombre.required' => 'El nombre del producto es obligatorio.',
+            // Mensaje de error para la regla 'unique'
+            'nombre.unique' => 'Ya existe un producto con este nombre.',
             'precio.required' => 'El precio del producto es obligatorio.',
             'precio.numeric' => 'El precio debe ser un número.',
             'precio.min' => 'El precio no puede ser negativo.',
@@ -125,7 +135,7 @@ class ProductoController extends Controller
 
         $producto = Producto::create($productoData);
 
-        // --- CAMBIO CLAVE AQUÍ: Preparar datos para la tabla pivote ---
+        // Preparar datos para la tabla pivote
         if ($request->has('ingredientes')) {
             $ingredientesToSync = [];
             foreach ($request->input('ingredientes') as $ingredienteId) {
@@ -133,7 +143,6 @@ class ProductoController extends Controller
             }
             $producto->ingredientes()->sync($ingredientesToSync);
         }
-        // --- FIN CAMBIO CLAVE ---
 
         Log::info('ProductoController@store: Producto ' . $producto->nombre . ' creado exitosamente por ' . Auth::user()->email . '. ID: ' . $producto->id);
         return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
@@ -169,7 +178,8 @@ class ProductoController extends Controller
         $this->authorize('update', $producto);
 
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            // Usamos la regla 'unique' pero ignoramos el producto actual para evitar errores
+            'nombre' => ['required', 'string', 'max:255', Rule::unique('productos', 'nombre')->ignore($producto->id)],
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'stock' => 'required|integer|min:0',
@@ -180,6 +190,8 @@ class ProductoController extends Controller
         ],
         [
             'nombre.required' => 'El nombre del producto es obligatorio.',
+            // Mensaje de error para la regla 'unique' al actualizar
+            'nombre.unique' => 'Ya existe un producto con este nombre.',
             'precio.required' => 'El precio del producto es obligatorio.',
             'precio.numeric' => 'El precio debe ser un número.',
             'precio.min' => 'El precio no puede ser negativo.',
@@ -207,7 +219,7 @@ class ProductoController extends Controller
 
         $producto->update($productoData);
 
-        // --- CAMBIO CLAVE AQUÍ: Preparar datos para la tabla pivote ---
+        // Preparar datos para la tabla pivote
         if ($request->has('ingredientes')) {
             $ingredientesToSync = [];
             foreach ($request->input('ingredientes') as $ingredienteId) {
@@ -218,7 +230,6 @@ class ProductoController extends Controller
             // Si no se seleccionan ingredientes, desvincular todos los existentes
             $producto->ingredientes()->detach();
         }
-        // --- FIN CAMBIO CLAVE ---
 
         Log::info('ProductoController@update: Producto ' . $producto->nombre . ' actualizado exitosamente por ' . Auth::user()->email . '. ID: ' . $producto->id);
         return redirect()->route('admin.productos.index')->with('success', 'Producto actualizado exitosamente.');

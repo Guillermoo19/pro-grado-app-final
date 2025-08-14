@@ -27,6 +27,15 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Se define la Gate 'access-admin' que se usa en las rutas.
+        Gate::define('access-admin', function (User $user) {
+            // Se usa la función isAdmin() del modelo User para verificar el rol.
+            return $user->isAdmin();
+        });
+
+        // La Gate::before es una buena práctica, pero no estaba resolviendo el
+        // problema de la Gate 'access-admin'. Para que funcione, la Gate
+        // debe estar explícitamente definida.
         Gate::before(function (User $user, string $ability) {
             if (! $user->relationLoaded('role')) {
                 $user->loadMissing('role');

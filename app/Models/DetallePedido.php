@@ -4,22 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // Asegúrate de que esta línea esté presente
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetallePedido extends Model
 {
     use HasFactory;
 
-    // Si tu tabla de ítems de pedido se llama 'detalle_pedidos', esto no es necesario.
-    // Si tu tabla se llama de otra forma, por ejemplo, 'order_items', descomenta y ajusta:
-    // protected $table = 'nombre_de_tu_tabla_de_items_de_pedido';
+    // La tabla de la base de datos a la que corresponde el modelo.
+    protected $table = 'detalle_pedidos';
 
     protected $fillable = [
         'pedido_id',
         'producto_id',
         'cantidad',
-        'precio_unitario', // Precio del producto en el momento de la compra
-        'subtotal', // <--- ¡DESCOMENTADO Y AÑADIDO A $fillable!
+        'precio_unitario', // Precio del producto base al momento de la compra
+        'subtotal', // Precio total del ítem (producto + ingredientes)
+        'ingredientes_adicionales', // Lista de ingredientes adicionales en formato JSON
+    ];
+
+    /**
+     * Define los atributos que deben ser convertidos a tipos de datos nativos.
+     */
+    protected $casts = [
+        'ingredientes_adicionales' => 'array', // Esta línea es fundamental
     ];
 
     /**

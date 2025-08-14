@@ -3,14 +3,16 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IngredienteController;
-use App\Http\Controllers\Admin\UserController; // Se ha corregido para apuntar al controlador de Admin
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CheckoutController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +71,7 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard');
 
         // Rutas para Productos (Admin)
-        Route::resource('productos', ProductoController::class);
+        Route::resource('productos', AdminProductoController::class);
         
         // Rutas para Roles (Admin)
         Route::resource('roles', RoleController::class);
@@ -87,7 +89,6 @@ Route::middleware('auth')->group(function () {
         Route::patch('/pedidos/{pedido}/update-estado-pago', [PedidoController::class, 'updateEstadoPago'])->name('pedidos.update_estado_pago');
 
         // Rutas para Usuarios (Admin)
-        // Se ha quitado la excepción para que se generen todas las rutas
         Route::resource('users', UserController::class); 
         Route::patch('users/{user}/role', [UserController::class, 'updateRole'])->name('users.update_role');
 

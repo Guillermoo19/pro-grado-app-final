@@ -5,22 +5,21 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <!-- Se ha eliminado el enlace del logo al dashboard -->
+                    <a href="/">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-
+                    {{-- Se ha eliminado el enlace del dashboard para la navegación principal --}}
+                    
                     @auth
                         {{-- Enlaces para CLIENTES --}}
                         @if (!Auth::user()->isAdmin())
                             <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
-                                {{ __('Menú') }} {{-- CAMBIO: Catálogo a Menú --}}
+                                {{ __('Menú') }}
                             </x-nav-link>
                             <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')">
                                 {{ __('Carrito') }}
@@ -31,32 +30,11 @@
                         @endif
 
                         {{-- Enlaces para ADMINISTRADORES --}}
-                        @if (Auth::user()->isAdmin())
-                            <x-nav-link :href="route('admin.pedidos.index')" :active="request()->routeIs('admin.pedidos.index')">
-                                {{ __('Gestión de Pedidos') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
-                                {{ __('Roles') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('admin.categorias.index')" :active="request()->routeIs('admin.categorias.index')">
-                                {{ __('Categorías') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('admin.productos.index')" :active="request()->routeIs('admin.productos.index')">
-                                {{ __('Productos (Admin)') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('admin.ingredientes.index')" :active="request()->routeIs('admin.ingredientes.index')">
-                                {{ __('Ingredientes') }}
-                            </x-nav-link>
-                            {{-- INICIO DEL CAMBIO --}}
-                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                                {{ __('Gestión de Usuarios') }}
-                            </x-nav-link>
-                            {{-- FIN DEL CAMBIO --}}
-                        @endif
+                        {{-- HEMOS ELIMINADO LOS ENLACES DE ADMINISTRADOR DE LA BARRA DE NAVEGACIÓN SUPERIOR --}}
                     @else
                         {{-- Enlaces para usuarios NO autenticados (invitados) --}}
                         <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
-                            {{ __('Menú') }} {{-- CAMBIO: Catálogo a Menú --}}
+                            {{ __('Menú') }}
                         </x-nav-link>
                         <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')">
                             {{ __('Carrito') }}
@@ -86,6 +64,28 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @if (Auth::user()->isAdmin())
+                                {{-- Enlaces para ADMINISTRADORES en el dropdown --}}
+                                <x-dropdown-link :href="route('admin.pedidos.index')">
+                                    {{ __('Gestión de Pedidos') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.roles.index')">
+                                    {{ __('Roles') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.categorias.index')">
+                                    {{ __('Categorías') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.productos.index')">
+                                    {{ __('Productos (Admin)') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.ingredientes.index')">
+                                    {{ __('Ingredientes') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.users.index')">
+                                    {{ __('Gestión de Usuarios') }}
+                                </x-dropdown-link>
+                            @endif
+                            
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
@@ -127,15 +127,13 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-
+            {{-- Se ha eliminado el enlace del dashboard para la navegación responsive --}}
+            
             @auth
                 {{-- Enlaces para CLIENTES (Responsive) --}}
                 @if (!Auth::user()->isAdmin())
                     <x-responsive-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
-                        {{ __('Menú') }} {{-- CAMBIO: Catálogo a Menú --}}
+                        {{ __('Menú') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')">
                         {{ __('Carrito') }}
@@ -162,11 +160,9 @@
                     <x-responsive-nav-link :href="route('admin.ingredientes.index')" :active="request()->routeIs('admin.ingredientes.index')">
                         {{ __('Ingredientes') }}
                     </x-responsive-nav-link>
-                    {{-- INICIO DEL CAMBIO RESPONSIVE --}}
                     <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                         {{ __('Gestión de Usuarios') }}
                     </x-responsive-nav-link>
-                    {{-- FIN DEL CAMBIO RESPONSIVE --}}
                 @endif
             @else
                 {{-- Enlaces para usuarios NO autenticados (invitados) (Responsive) --}}
@@ -190,6 +186,28 @@
                 </div>
 
                 <div class="mt-3 space-y-1">
+                    @if (Auth::user()->isAdmin())
+                        {{-- Enlaces para ADMINISTRADORES en el dropdown responsive --}}
+                        <x-responsive-nav-link :href="route('admin.pedidos.index')">
+                            {{ __('Gestión de Pedidos') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.roles.index')">
+                            {{ __('Roles') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.categorias.index')">
+                            {{ __('Categorías') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.productos.index')">
+                            {{ __('Productos (Admin)') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.ingredientes.index')">
+                            {{ __('Ingredientes') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.users.index')">
+                            {{ __('Gestión de Usuarios') }}
+                        </x-responsive-nav-link>
+                    @endif
+                    
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>

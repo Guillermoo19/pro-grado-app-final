@@ -54,6 +54,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Se corrige la redirección a la ruta de productos.
+        return redirect()->route('productos.index'); 
     }
 }

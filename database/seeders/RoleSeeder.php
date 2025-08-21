@@ -13,7 +13,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // Usa firstOrCreate para crear el rol si no existe
         Role::firstOrCreate(['nombre' => 'admin']);
+        Role::firstOrCreate(['nombre' => 'cliente']); // Añadimos esta línea de forma temporal
+
         $this->command->info('Roles creados correctamente!');
     }
 }

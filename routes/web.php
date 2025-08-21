@@ -43,12 +43,6 @@ Route::post('/carrito/remove', [CarritoController::class, 'eliminar'])->name('ca
 
 // Rutas que SÍ requieren autenticación (login)
 Route::middleware('auth')->group(function () {
-    // Se ha eliminado la ruta de dashboard para usuarios normales
-    // Dashboard (para usuarios normales)
-    // Route::get('/dashboard', function () {
-    //     return view('dashboard');
-    // })->name('dashboard');
-
     // Perfil de usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -32,11 +32,13 @@ class AuthenticatedSessionController extends Controller
         Auth::setUser(Auth::user()->fresh()); 
 
         // Lógica de redirección basada en el rol del usuario
+        // Nota: La función isAdmin() debe estar definida en tu modelo User
         if (Auth::user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('dashboard');
+        // Si no es admin, lo redirige a la página principal de productos
+        return redirect()->route('productos.index'); 
     }
 
     /**

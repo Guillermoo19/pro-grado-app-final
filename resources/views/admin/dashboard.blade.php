@@ -33,6 +33,16 @@
                             <h4 class="font-semibold text-lg text-orange-800">Gestionar Usuarios</h4>
                             <p class="text-sm text-orange-600">Administrar usuarios y sus roles.</p>
                         </a>
+                        {{-- AÑADIDO: Enlace para Gestionar Ingredientes --}}
+                        <a href="{{ route('admin.ingredientes.index') }}" class="block p-4 bg-pink-100 rounded-lg shadow hover:bg-pink-200 transition">
+                            <h4 class="font-semibold text-lg text-pink-800">Gestionar Ingredientes</h4>
+                            <p class="text-sm text-pink-600">Administrar los ingredientes disponibles.</p>
+                        </a>
+                        {{-- AÑADIDO: Enlace para Gestionar Configuración (ruta corregida) --}}
+                        <a href="{{ route('admin.configuracion.edit') }}" class="block p-4 bg-teal-100 rounded-lg shadow hover:bg-teal-200 transition">
+                            <h4 class="font-semibold text-lg text-teal-800">Configuración</h4>
+                            <p class="text-sm text-teal-600">Ajustes generales de la aplicación.</p>
+                        </a>
                         {{-- Añade más enlaces de administración aquí si tienes más secciones --}}
                     </div>
                 </div>

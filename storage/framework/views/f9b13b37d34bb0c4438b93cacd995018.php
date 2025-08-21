@@ -45,6 +45,16 @@
                             <p class="text-sm text-orange-600">Administrar usuarios y sus roles.</p>
                         </a>
                         
+                        <a href="<?php echo e(route('admin.ingredientes.index')); ?>" class="block p-4 bg-pink-100 rounded-lg shadow hover:bg-pink-200 transition">
+                            <h4 class="font-semibold text-lg text-pink-800">Gestionar Ingredientes</h4>
+                            <p class="text-sm text-pink-600">Administrar los ingredientes disponibles.</p>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.configuracion.edit')); ?>" class="block p-4 bg-teal-100 rounded-lg shadow hover:bg-teal-200 transition">
+                            <h4 class="font-semibold text-lg text-teal-800">Configuración</h4>
+                            <p class="text-sm text-teal-600">Ajustes generales de la aplicación.</p>
+                        </a>
+                        
                     </div>
                 </div>
             </div>

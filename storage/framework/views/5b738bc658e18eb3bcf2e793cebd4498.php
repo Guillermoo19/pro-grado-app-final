@@ -14,30 +14,19 @@
         <?php echo app('Illuminate\Foundation\Vite')('resources/css/app.css'); ?>
     </head>
     
-    <body class="antialiased bg-chamos-marron-oscuro text-chamos-beige">
-        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-chamos-marron-oscuro selection:bg-chamos-marron-claro selection:text-white">
-            <?php if(Route::has('login')): ?>
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    <?php if(auth()->guard()->check()): ?>
-                        <a href="<?php echo e(url('/dashboard')); ?>" class="font-semibold text-chamos-amarillo hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-chamos-amarillo">Dashboard</a>
-                    <?php else: ?>
-                        
-                        
-                        <a href="<?php echo e(route('login')); ?>" class="font-semibold text-chamos-amarillo hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-chamos-amarillo mr-4">Log in</a>
-                        <?php if(Route::has('register')): ?>
-                            <a href="<?php echo e(route('register')); ?>" class="ml-4 font-semibold text-chamos-amarillo hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-chamos-amarillo">Register</a>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-
+    <body class="antialiased bg-fondo-bienvenida text-chamos-beige">
+        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-fondo-bienvenida selection:bg-chamos-marron-claro selection:text-white">
             <div class="max-w-7xl mx-auto p-6 lg:p-8 text-center">
-                <h1 class="text-4xl font-bold mb-6 text-chamos-amarillo">¡Bienvenido a Mi Aplicación!</h1>
-                <p class="mb-8 text-chamos-beige">Esta es la página de bienvenida de tu aplicación. Por favor, inicia sesión o regístrate para continuar.</p>
+                <h1 class="text-4xl font-bold mb-6 text-chamos-amarillo">Bienvenido al área de administración</h1>
+                
+                <div class="flex justify-center mb-8">
+                    
+                    <img src="<?php echo e(asset('images/chamos-logo.png')); ?>" alt="Logo de Los Chamos" class="h-64 w-64 object-contain">
+                </div>
 
                 <div class="flex justify-center space-x-4">
                     
-                    <a href="<?php echo e(route('login')); ?>" class="inline-flex items-center px-6 py-3 bg-chamos-marron-claro border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-chamos-marron-claro focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="<?php echo e(route('login')); ?>" class="inline-flex items-center px-6 py-3 bg-chamos-amarillo border border-transparent rounded-md font-semibold text-sm text-chamos-marron-oscuro uppercase tracking-widest hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-chamos-amarillo focus:ring-offset-2 transition ease-in-out duration-150">
                         Iniciar Sesión
                     </a>
                     

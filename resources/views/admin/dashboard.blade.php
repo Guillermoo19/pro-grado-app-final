@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard de Administración') }}
+            {{ __('Panel de Control del Administrador') }}
         </h2>
     </x-slot>
 
@@ -9,8 +9,13 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    {{ __("¡Bienvenido al Dashboard de Administración!") }}
-                    <p class="mt-4">Aquí podrás gestionar usuarios, productos, categorías y pedidos.</p>
+                    <h1 class="text-3xl font-bold mb-2">
+                        Bienvenido al panel de control {{ Auth::user()->name }}.
+                    </h1>
+                    <!-- Texto actualizado según la solicitud del usuario -->
+                    <p class="mt-4 text-gray-600">
+                        Gestión de las áreas de administración (Crear, Leer, Actualizar, Borrar).
+                    </p>
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <a href="{{ route('admin.roles.index') }}" class="block p-4 bg-blue-100 rounded-lg shadow hover:bg-blue-200 transition">
                             <h4 class="font-semibold text-lg text-blue-800">Gestionar Roles</h4>

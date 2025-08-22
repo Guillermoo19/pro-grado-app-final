@@ -1,67 +1,51 @@
-<nav x-data="{ open: false }" class="bg-chamos-marron-oscuro dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" style="background-color: #702c0c;" class="dark:bg-gray-800 border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-24">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <!-- Se ha eliminado el enlace del logo al dashboard -->
                     <a href="/">
-                        {{-- Cambiar el color del logo para que contraste con el fondo oscuro --}}
-                        <x-application-logo class="block h-9 w-auto fill-current text-chamos-beige dark:text-gray-200" />
+                        <img src="{{ asset('images/chamo-logo2.png') }}" alt="Los Chamos Logo" class="block h-20 w-auto fill-current text-chamos-marron-oscuro dark:text-gray-200">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    {{-- Se ha eliminado el enlace del dashboard para la navegación principal --}}
-                    
                     @auth
-                        {{-- Enlaces para CLIENTES --}}
                         @if (!Auth::user()->isAdmin())
-                            {{-- Cambiar el color del texto de los enlaces --}}
-                            <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')" class="text-chamos-beige hover:text-white">
+                            <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')" class="text-white hover:text-chamos-cafe">
                                 {{ __('Menú') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')" class="text-chamos-beige hover:text-white">
+                            <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')" class="text-white hover:text-chamos-cafe">
                                 {{ __('Carrito') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.index')" class="text-chamos-beige hover:text-white">
+                            <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.index')" class="text-white hover:text-chamos-cafe">
                                 {{ __('Mis Pedidos') }}
                             </x-nav-link>
                         @endif
-
-                        {{-- Enlaces para ADMINISTRADORES --}}
-                        {{-- HEMOS ELIMINADO LOS ENLACES DE ADMINISTRADOR DE LA BARRA DE NAVEGACIÓN SUPERIOR --}}
-                    @else
-                        {{-- Enlaces para usuarios NO autenticados (invitados) --}}
-                        {{-- Cambiar el color del texto de los enlaces --}}
-                        <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')" class="text-chamos-beige hover:text-white">
-                            {{ __('Menú') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')" class="text-chamos-beige hover:text-white">
-                            {{ __('Carrito') }}
-                        </x-nav-link>
                     @endauth
                 </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @auth {{-- Solo muestra el dropdown si el usuario está autenticado --}}
+                @auth 
+                    <!-- Dropdown del usuario autenticado -->
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            {{-- Cambiar el color del texto y el fondo del botón de perfil --}}
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-chamos-beige dark:text-gray-400 bg-chamos-marron-oscuro dark:bg-gray-800 hover:text-white dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
-                                @if (Auth::user()->role)
-                                    <div class="ms-1 text-xs text-chamos-beige dark:text-gray-400">
-                                        ({{ Auth::user()->role->nombre }})
-                                    </div>
-                                @endif
-
+                            <!-- Se combinan el nombre y el rol en una sola línea -->
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-black dark:text-black bg-[#F9F5E6] dark:bg-[#F9F5E6] hover:text-gray-700 dark:hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div class="flex items-center">
+                                    <span>{{ Auth::user()->name }}</span>
+                                    @if (Auth::user()->role)
+                                        <!-- Se cambia el formato para que solo se vea el rol entre paréntesis y en color negro -->
+                                        <span class="ms-1 text-xs text-black dark:text-black">
+                                            ({{ Auth::user()->role->nombre }})
+                                        </span>
+                                    @endif
+                                </div>
                                 <div class="ms-1">
-                                    {{-- Cambiar el color del ícono del dropdown --}}
-                                    <svg class="fill-current h-4 w-4 text-chamos-beige" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <svg class="fill-current h-4 w-4 text-black dark:text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                     </svg>
                                 </div>
@@ -70,7 +54,7 @@
 
                         <x-slot name="content">
                             @if (Auth::user()->isAdmin())
-                                {{-- Enlaces para ADMINISTRADORES en el dropdown --}}
+                                <!-- Enlaces de administración en el dropdown -->
                                 <x-dropdown-link :href="route('admin.pedidos.index')">
                                     {{ __('Gestión de Pedidos') }}
                                 </x-dropdown-link>
@@ -90,38 +74,35 @@
                                     {{ __('Gestión de Usuarios') }}
                                 </x-dropdown-link>
                             @endif
-                            
+
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 
-                            <!-- Authentication -->
+                            <!-- Cierre de sesión -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-
                                 <x-dropdown-link :href="route('logout')"
-                                         onclick="event.preventDefault();
-                                                         this.closest('form').submit();">
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
                     </x-dropdown>
-                @else {{-- Si el usuario NO está autenticado, muestra enlaces de Login/Register --}}
+                @else 
+                    <!-- Enlaces de Login/Register si no está autenticado -->
                     <div class="space-x-4">
-                        {{-- Cambiar el color de los enlaces de Login y Register --}}
-                        <a href="{{ route('login') }}" class="text-chamos-beige hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+                        <a href="{{ route('login') }}" class="text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-chamos-beige hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+                            <a href="{{ route('register') }}" class="ml-4 text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
                         @endif
                     </div>
                 @endauth
             </div>
 
-            <!-- Hamburger -->
+            <!-- Menú hamburguesa (versión móvil) -->
             <div class="-me-2 flex items-center sm:hidden">
-                {{-- Cambiar el color del botón del menú hamburguesa --}}
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-chamos-beige dark:text-gray-500 hover:text-white dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-white dark:text-gray-500 hover:text-white dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -134,10 +115,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            {{-- Se ha eliminado el enlace del dashboard para la navegación responsive --}}
-            
             @auth
-                {{-- Enlaces para CLIENTES (Responsive) --}}
                 @if (!Auth::user()->isAdmin())
                     <x-responsive-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
                         {{ __('Menú') }}
@@ -149,9 +127,8 @@
                         {{ __('Mis Pedidos') }}
                     </x-responsive-nav-link>
                 @endif
-
-                {{-- Enlaces para ADMINISTRADORES (Responsive) --}}
                 @if (Auth::user()->isAdmin())
+                    <!-- Enlaces de administración responsivos -->
                     <x-responsive-nav-link :href="route('admin.pedidos.index')">
                         {{ __('Gestión de Pedidos') }}
                     </x-responsive-nav-link>
@@ -172,19 +149,19 @@
                     </x-responsive-nav-link>
                 @endif
             @else
-                {{-- Enlaces para usuarios NO autenticados (invitados) (Responsive) --}}
+                <!-- Enlaces para invitados responsivos -->
                 <div class="pt-2 pb-3 space-y-1">
                     <x-responsive-nav-link :href="route('login')">
-                        {{ __('Menú') }}
+                        {{ __('Log in') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('register')">
-                        {{ __('Carrito') }}
+                        {{ __('Register') }}
                     </x-responsive-nav-link>
                 </div>
             @endauth
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- Opciones del menú de configuración responsivo -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             @auth
                 <div class="px-4">
@@ -194,7 +171,7 @@
 
                 <div class="mt-3 space-y-1">
                     @if (Auth::user()->isAdmin())
-                        {{-- Enlaces para ADMINISTRADORES en el dropdown responsive --}}
+                        <!-- Enlaces de administración en el dropdown responsivo -->
                         <x-responsive-nav-link :href="route('admin.pedidos.index')">
                             {{ __('Gestión de Pedidos') }}
                         </x-responsive-nav-link>
@@ -214,24 +191,22 @@
                             {{ __('Gestión de Usuarios') }}
                         </x-responsive-nav-link>
                     @endif
-                    
+
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>
 
-                    <!-- Authentication -->
+                    <!-- Cierre de sesión -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-
                         <x-responsive-nav-link :href="route('logout')"
-                                 onclick="event.preventDefault();
-                                                 this.closest('form').submit();">
+                                onclick="event.preventDefault(); this.closest('form').submit();">
                             {{ __('Log Out') }}
                         </x-responsive-nav-link>
                     </form>
                 </div>
             @else
-                {{-- Enlaces de Login/Register para responsive si no está autenticado --}}
+                <!-- Enlaces para invitados responsivos -->
                 <div class="mt-3 space-y-1">
                     <x-responsive-nav-link :href="route('login')">
                         {{ __('Log in') }}

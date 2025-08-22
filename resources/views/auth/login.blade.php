@@ -26,13 +26,13 @@
             <div>
                 {{-- Cambiamos el color de la etiqueta Email a blanco --}}
                 <x-label for="email" value="{{ __('Correo electrónico') }}" class="text-white" />
-                <x-input id="email" class="block mt-1 w-full bg-chamos-naranja-oscuro text-white" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             </div>
 
             <div class="mt-4">
                 {{-- Cambiamos el color de la etiqueta Password a blanco --}}
                 <x-label for="password" value="{{ __('Contraseña') }}" class="text-white" />
-                <x-input id="password" class="block mt-1 w-full bg-chamos-naranja-oscuro text-white" type="password" name="password" required autocomplete="current-password" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
             <div class="block mt-4">
@@ -59,8 +59,8 @@
         <div class="mt-4 text-center">
             <p class="text-sm text-chamos-beige">¿No tienes una cuenta?</p>
             <a class="underline text-sm text-chamos-beige hover:text-chamos-amarillo rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-chamos-amarillo" href="{{ route('register') }}">
-                        {{ __('Regístrate aquí') }}
-                    </a>
+                {{ __('Regístrate aquí') }}
+            </a>
         </div>
         {{-- FIN DEL ENLACE PARA REGISTRARSE --}}
     </x-authentication-card>

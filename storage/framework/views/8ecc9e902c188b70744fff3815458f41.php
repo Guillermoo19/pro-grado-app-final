@@ -28,5 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars); ?>
 
-<input <?php echo e($disabled ? 'disabled' : ''); ?> <?php echo $attributes->merge(['class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm']); ?>>
+<input <?php echo e($disabled ? 'disabled' : ''); ?> <?php echo $attributes->merge([
+    'class' => 'border-gray-300 dark:border-gray-700 bg-chamos-naranja-oscuro text-white focus:border-chamos-beige focus:ring-chamos-amarillo rounded-md shadow-sm'
+]); ?>>
 <?php /**PATH E:\Proyecto de Grado\Grado\resources\views/components/input.blade.php ENDPATH**/ ?>

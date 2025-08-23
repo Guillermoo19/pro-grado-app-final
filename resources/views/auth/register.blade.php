@@ -6,7 +6,18 @@
             </a>
         </x-slot>
 
-        <x-validation-errors class="mb-4" />
+        {{-- Este es el bloque que maneja los errores, ya traducido --}}
+        @if ($errors->any())
+            <div class="mb-4 font-medium text-sm text-red-600 dark:text-red-400">
+                {{ __('¡Vaya! Algo salió mal.') }}
+            </div>
+
+            <ul class="mt-3 list-disc list-inside text-sm text-red-600 dark:text-red-400">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
@@ -42,7 +53,7 @@
                 </a>
 
                 <x-button class="ms-4">
-                    {{ __('Register') }}
+                    {{ __('Registrarse') }}
                 </x-button>
             </div>
         </form>

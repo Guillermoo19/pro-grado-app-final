@@ -24,26 +24,19 @@
             </a>
          <?php $__env->endSlot(); ?>
 
-        <?php if (isset($component)) { $__componentOriginalb24df6adf99a77ed35057e476f61e153 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalb24df6adf99a77ed35057e476f61e153 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.validation-errors','data' => ['class' => 'mb-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('validation-errors'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'mb-4']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalb24df6adf99a77ed35057e476f61e153)): ?>
-<?php $attributes = $__attributesOriginalb24df6adf99a77ed35057e476f61e153; ?>
-<?php unset($__attributesOriginalb24df6adf99a77ed35057e476f61e153); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalb24df6adf99a77ed35057e476f61e153)): ?>
-<?php $component = $__componentOriginalb24df6adf99a77ed35057e476f61e153; ?>
-<?php unset($__componentOriginalb24df6adf99a77ed35057e476f61e153); ?>
-<?php endif; ?>
+        
+        <?php if($errors->any()): ?>
+            <div class="mb-4 font-medium text-sm text-red-600 dark:text-red-400">
+                <?php echo e(__('¡Vaya! Algo salió mal.')); ?>
+
+            </div>
+
+            <ul class="mt-3 list-disc list-inside text-sm text-red-600 dark:text-red-400">
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </ul>
+        <?php endif; ?>
 
         <form method="POST" action="<?php echo e(route('register')); ?>">
             <?php echo csrf_field(); ?>
@@ -241,7 +234,7 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['class' => 'ms-4']); ?>
-                    <?php echo e(__('Register')); ?>
+                    <?php echo e(__('Registrarse')); ?>
 
                  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

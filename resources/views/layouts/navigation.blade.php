@@ -10,10 +10,11 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @auth
-                        @if (!Auth::user()->isAdmin())
+                <!-- Navigation Links - Ahora para usuarios que no son administradores -->
+                {{-- Se añade una directiva @unless para ocultar estos enlaces si el usuario es admin --}}
+                @auth
+                    @unless (Auth::user()->isAdmin())
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')" class="text-white hover:text-chamos-cafe">
                                 {{ __('Menú') }}
                             </x-nav-link>
@@ -23,9 +24,19 @@
                             <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.index')" class="text-white hover:text-chamos-cafe">
                                 {{ __('Mis Pedidos') }}
                             </x-nav-link>
-                        @endif
-                    @endauth
-                </div>
+                        </div>
+                    @endunless
+                @else
+                    {{-- Si no está autenticado, muestra los enlaces de Menú y Carrito --}}
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                         <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')" class="text-white hover:text-chamos-cafe">
+                            {{ __('Menú') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.index')" class="text-white hover:text-chamos-cafe">
+                            {{ __('Carrito') }}
+                        </x-nav-link>
+                    </div>
+                @endauth
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -76,7 +87,7 @@
                             @endif
 
                             <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
+                                {{ __('Perfil') }}
                             </x-dropdown-link>
 
                             <!-- Cierre de sesión -->
@@ -84,7 +95,7 @@
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('Cerrar Sesión') }}
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
@@ -92,9 +103,9 @@
                 @else 
                     <!-- Enlaces de Login/Register si no está autenticado -->
                     <div class="space-x-4">
-                        <a href="{{ route('login') }}" class="text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+                        <a href="{{ route('login') }}" class="text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">{{ __('Iniciar Sesión') }}</a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+                            <a href="{{ route('register') }}" class="ml-4 text-white hover:text-chamos-cafe focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">{{ __('Registrarse') }}</a>
                         @endif
                     </div>
                 @endauth
@@ -114,9 +125,9 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            @auth
-                @if (!Auth::user()->isAdmin())
+        @auth
+            @unless (Auth::user()->isAdmin())
+                <div class="pt-2 pb-3 space-y-1">
                     <x-responsive-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
                         {{ __('Menú') }}
                     </x-responsive-nav-link>
@@ -126,44 +137,11 @@
                     <x-responsive-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.index')">
                         {{ __('Mis Pedidos') }}
                     </x-responsive-nav-link>
-                @endif
-                @if (Auth::user()->isAdmin())
-                    <!-- Enlaces de administración responsivos -->
-                    <x-responsive-nav-link :href="route('admin.pedidos.index')">
-                        {{ __('Gestión de Pedidos') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.roles.index')">
-                        {{ __('Roles') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.categorias.index')">
-                        {{ __('Categorías') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.productos.index')">
-                        {{ __('Productos (Admin)') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.ingredientes.index')">
-                        {{ __('Ingredientes') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.users.index')">
-                        {{ __('Gestión de Usuarios') }}
-                    </x-responsive-nav-link>
-                @endif
-            @else
-                <!-- Enlaces para invitados responsivos -->
-                <div class="pt-2 pb-3 space-y-1">
-                    <x-responsive-nav-link :href="route('login')">
-                        {{ __('Log in') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('register')">
-                        {{ __('Register') }}
-                    </x-responsive-nav-link>
                 </div>
-            @endauth
-        </div>
-
-        <!-- Opciones del menú de configuración responsivo -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            @auth
+            @endunless
+        
+            <!-- Opciones del menú de configuración responsivo -->
+            <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
                 <div class="px-4">
                     <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
@@ -193,7 +171,7 @@
                     @endif
 
                     <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
+                        {{ __('Perfil') }}
                     </x-responsive-nav-link>
 
                     <!-- Cierre de sesión -->
@@ -201,23 +179,23 @@
                         @csrf
                         <x-responsive-nav-link :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                            {{ __('Log Out') }}
+                            {{ __('Cerrar Sesión') }}
                         </x-responsive-nav-link>
                     </form>
                 </div>
-            @else
-                <!-- Enlaces para invitados responsivos -->
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('login')">
-                        {{ __('Log in') }}
+            </div>
+        @else
+            <!-- Enlaces para invitados responsivos -->
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('login')">
+                    {{ __('Iniciar Sesión') }}
+                </x-responsive-nav-link>
+                @if (Route::has('register'))
+                    <x-responsive-nav-link :href="route('register')">
+                        {{ __('Registrarse') }}
                     </x-responsive-nav-link>
-                    @if (Route::has('register'))
-                        <x-responsive-nav-link :href="route('register')">
-                            {{ __('Register') }}
-                        </x-responsive-nav-link>
-                    @endif
-                </div>
-            @endauth
-        </div>
+                @endif
+            </div>
+        @endauth
     </div>
 </nav>

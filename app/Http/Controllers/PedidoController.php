@@ -32,26 +32,45 @@ class PedidoController extends Controller
 
     /**
      * Muestra la lista de todos los pedidos para el administrador.
-     * Esta es la versión modificada para mostrar dos listas.
      */
     public function adminIndex()
     {
         Log::info('PedidoController@adminIndex: Usuario ' . Auth::user()->email . ' ha accedido a la gestión de pedidos.');
         
-        // Obtener pedidos pendientes o en proceso
-        $pedidosPendientes = Pedido::whereIn('estado_pedido', ['pendiente', 'en_preparacion', 'en_camino'])
-            ->with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Se obtienen todos los pedidos con los usuarios relacionados para evitar consultas N+1
+        $pedidos = Pedido::with('user')->get();
 
-        // Obtener pedidos ya entregados y pagados
-        $pedidosCompletados = Pedido::where('estado_pedido', 'entregado')
-            ->where('estado_pago', 'pagado')
-            ->with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Se inicializan las colecciones para cada tipo de pedido
+        $pedidosPendientes = collect();
+        $pedidosCompletados = collect();
+        $pedidosCanceladosPagados = collect();
+        $pedidosRechazados = collect();
+        
+        // Iterar sobre cada pedido para clasificarlo
+        foreach ($pedidos as $pedido) {
+            // Se considera "Rechazado" si el estado de pago es 'rechazado'
+            if ($pedido->estado_pago === 'rechazado') {
+                $pedidosRechazados->push($pedido);
+            }
+            // Se considera "Completado" si su estado es 'entregado'
+            elseif ($pedido->estado_pedido === 'entregado') {
+                $pedidosCompletados->push($pedido);
+            }
+            // Un pedido se considera "Cancelado y Pagado" si el estado de pedido es 'cancelado' Y el estado de pago es 'pagado' o 'reembolsado'
+            elseif ($pedido->estado_pedido === 'cancelado' && ($pedido->estado_pago === 'pagado' || $pedido->estado_pago === 'reembolsado')) {
+                $pedidosCanceladosPagados->push($pedido);
+            }
+            // Cualquier otro caso, incluyendo 'reembolso_pendiente', se considera "Pendiente"
+            else {
+                // Si el estado es 'reembolso_pendiente', lo cambiamos a 'pendiente' para la vista
+                if ($pedido->estado_pedido === 'reembolso_pendiente') {
+                    $pedido->estado_pedido = 'pendiente';
+                }
+                $pedidosPendientes->push($pedido);
+            }
+        }
 
-        return view('admin.pedidos.index', compact('pedidosPendientes', 'pedidosCompletados'));
+        return view('admin.pedidos.index', compact('pedidosPendientes', 'pedidosCompletados', 'pedidosRechazados', 'pedidosCanceladosPagados'));
     }
 
     /**
@@ -72,7 +91,8 @@ class PedidoController extends Controller
         $request->validate([
             'estado_pedido' => 'required|in:pendiente,en_preparacion,en_camino,entregado,cancelado',
         ]);
-
+        
+        // Simplemente actualiza el estado del pedido.
         $pedido->update(['estado_pedido' => $request->estado_pedido]);
 
         return back()->with('success', 'Estado del pedido actualizado con éxito.');
@@ -90,5 +110,19 @@ class PedidoController extends Controller
         $pedido->update(['estado_pago' => $request->estado_pago]);
 
         return back()->with('success', 'Estado del pago actualizado con éxito.');
+    }
+    
+    /**
+     * Marca un pedido como reembolsado, moviéndolo a un estado final.
+     */
+    public function marcarReembolsado(Pedido $pedido)
+    {
+        // Actualiza el estado del pedido y el estado de pago.
+        $pedido->update([
+            'estado_pedido' => 'cancelado',
+            'estado_pago' => 'reembolsado'
+        ]);
+
+        return back()->with('success', 'El pedido ha sido marcado como reembolsado y cancelado.');
     }
 }

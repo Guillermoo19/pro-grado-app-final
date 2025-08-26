@@ -34,6 +34,7 @@
                     <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline"><?php echo e(session('info')); ?></span>
                     </div>
+                </div>
                 <?php endif; ?>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -110,8 +111,6 @@
                     <div class="flex items-center space-x-4">
                         <select name="estado_pedido" class="form-select rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             <option value="pendiente" <?php echo e($pedido->estado_pedido == 'pendiente' ? 'selected' : ''); ?>>Pendiente</option>
-                            <option value="en_preparacion" <?php echo e($pedido->estado_pedido == 'en_preparacion' ? 'selected' : ''); ?>>En Preparación</option>
-                            <option value="en_camino" <?php echo e($pedido->estado_pedido == 'en_camino' ? 'selected' : ''); ?>>En Camino</option>
                             <option value="entregado" <?php echo e($pedido->estado_pedido == 'entregado' ? 'selected' : ''); ?>>Entregado</option>
                             <option value="cancelado" <?php echo e($pedido->estado_pedido == 'cancelado' ? 'selected' : ''); ?>>Cancelado</option>
                         </select>
@@ -126,8 +125,6 @@
                     <?php echo method_field('PATCH'); ?>
                     <div class="flex items-center space-x-4">
                         <select name="estado_pago" class="form-select rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <option value="pendiente" <?php echo e($pedido->estado_pago == 'pendiente' ? 'selected' : ''); ?>>Pendiente</option>
-                            <option value="pendiente_revision" <?php echo e($pedido->estado_pago == 'pendiente_revision' ? 'selected' : ''); ?>>Pendiente de Revisión</option>
                             <option value="pagado" <?php echo e($pedido->estado_pago == 'pagado' ? 'selected' : ''); ?>>Pagado</option>
                             <option value="rechazado" <?php echo e($pedido->estado_pago == 'rechazado' ? 'selected' : ''); ?>>Rechazado</option>
                         </select>

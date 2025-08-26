@@ -24,6 +24,7 @@
                     <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline">{{ session('info') }}</span>
                     </div>
+                </div>
                 @endif
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -100,8 +101,6 @@
                     <div class="flex items-center space-x-4">
                         <select name="estado_pedido" class="form-select rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             <option value="pendiente" {{ $pedido->estado_pedido == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="en_preparacion" {{ $pedido->estado_pedido == 'en_preparacion' ? 'selected' : '' }}>En Preparación</option>
-                            <option value="en_camino" {{ $pedido->estado_pedido == 'en_camino' ? 'selected' : '' }}>En Camino</option>
                             <option value="entregado" {{ $pedido->estado_pedido == 'entregado' ? 'selected' : '' }}>Entregado</option>
                             <option value="cancelado" {{ $pedido->estado_pedido == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
                         </select>
@@ -116,8 +115,6 @@
                     @method('PATCH')
                     <div class="flex items-center space-x-4">
                         <select name="estado_pago" class="form-select rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <option value="pendiente" {{ $pedido->estado_pago == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="pendiente_revision" {{ $pedido->estado_pago == 'pendiente_revision' ? 'selected' : '' }}>Pendiente de Revisión</option>
                             <option value="pagado" {{ $pedido->estado_pago == 'pagado' ? 'selected' : '' }}>Pagado</option>
                             <option value="rechazado" {{ $pedido->estado_pago == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
                         </select>

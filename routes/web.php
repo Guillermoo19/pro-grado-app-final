@@ -86,6 +86,8 @@ Route::middleware('auth')->group(function () {
         // Rutas para Usuarios (Admin)
         Route::resource('users', UserController::class); 
         Route::patch('users/{user}/role', [UserController::class, 'updateRole'])->name('users.update_role');
+        Route::patch('users/{user}/demote', [UserController::class, 'demoteAdmin'])->name('users.demote');
+
 
         // Rutas para la Configuración del Establecimiento
         Route::get('/configuracion', [ConfiguracionController::class, 'edit'])->name('configuracion.edit');

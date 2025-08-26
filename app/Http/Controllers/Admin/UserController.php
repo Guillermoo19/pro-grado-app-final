@@ -27,10 +27,10 @@ class UserController extends Controller
         $noRoleUsers = collect();
 
         $allUsers->each(function ($user) use (&$admins, &$clients, &$otherRoles, &$noRoleUsers) {
-            // Se ha eliminado la l\u00EDnea que ocultaba al usuario autenticado para que puedas verlo en la lista.
-            // Si quieres volver a ocultarlo, descomenta esta l\u00EDnea:
+            // Se ha eliminado la línea que ocultaba al usuario autenticado para que puedas verlo en la lista.
+            // Si quieres volver a ocultarlo, descomenta esta línea:
             // if ($user->id === Auth::id()) {
-            //     return;
+            //      return;
             // }
 
             $roleName = optional($user->role)->nombre;
@@ -51,7 +51,7 @@ class UserController extends Controller
 
     /**
      * Muestra el formulario para crear un nuevo usuario.
-     * Ahora ya no carga los roles ya que se asignar\u00E1 un rol por defecto.
+     * Ahora ya no carga los roles ya que se asignará un rol por defecto.
      */
     public function create()
     {
@@ -62,7 +62,7 @@ class UserController extends Controller
     
     /**
      * Almacena un nuevo usuario en la base de datos.
-     * Ahora asigna autom\u00E1ticamente el rol 'cliente' por defecto.
+     * Ahora asigna automáticamente el rol 'cliente' por defecto.
      */
     public function store(Request $request)
     {
@@ -75,18 +75,13 @@ class UserController extends Controller
             'phone_number' => 'nullable|string|max:20',
         ]);
 
-        $clienteRole = Role::where('nombre', 'cliente')->first();
-
-        if (!$clienteRole) {
-            return back()->with('error', 'El rol "cliente" no se ha encontrado en la base de datos.');
-        }
-
-        $validated['role_id'] = $clienteRole->id;
+        // Ya que los "clientes" no tienen rol, no necesitamos buscarlo.
+        $validated['role_id'] = null;
         $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
 
-        // Se ha cambiado la redirecci\u00F3n para que actualice la vista
-        return $this->index()->with('success', 'User created successfully.');
+        // Se ha cambiado la redirección para que actualice la vista
+        return $this->index()->with('success', 'Usuario creado correctamente.');
     }
 
     /**
@@ -111,7 +106,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone_number' => 'nullable|string|max:20',
             'role_id' => [
-                'required',
+                'nullable', // Se ha cambiado a nullable
                 'integer',
                 'exists:roles,id'
             ]
@@ -119,7 +114,7 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado correctamente.');
     }
     
     /**
@@ -131,7 +126,7 @@ class UserController extends Controller
 
         $validated = $request->validate([
             'role_id' => [
-                'required',
+                'nullable', // Se ha cambiado a nullable
                 'integer',
                 'exists:roles,id'
             ]
@@ -143,12 +138,36 @@ class UserController extends Controller
     }
     
     /**
+     * Quita el rol de administrador y lo cambia a 'cliente'.
+     */
+    public function demoteAdmin(User $user)
+    {
+        $this->authorize('update', $user);
+
+        // No puedes quitarte el rol de administrador a ti mismo
+        if (Auth::user()->id === $user->id) {
+            return back()->with('error', 'No puedes quitarte el rol de administrador a ti mismo.');
+        }
+        
+        // Simplemente establece el role_id a null para quitar el rol de administrador
+        $user->update(['role_id' => null]);
+
+        return redirect()->route('admin.users.index')->with('success', 'El usuario ha sido degradado a cliente.');
+    }
+    
+    /**
      * Elimina un usuario de la base de datos.
      */
     public function destroy(User $user)
     {
         $this->authorize('delete', $user);
+        
+        // No puedes eliminarte a ti mismo
+        if (Auth::user()->id === $user->id) {
+            return back()->with('error', 'No puedes eliminar tu propia cuenta.');
+        }
+        
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado correctamente.');
     }
 }

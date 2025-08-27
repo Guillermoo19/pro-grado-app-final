@@ -64,10 +64,10 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255|unique:productos,nombre',
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
+            'precio' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'stock' => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'ingredientes' => 'array',
             'ingredientes.*' => 'exists:ingredientes,id',
         ], [
@@ -90,8 +90,16 @@ class ProductoController extends Controller
             'ingredientes.*.exists' => 'Alguno de los ingredientes seleccionados no es válido.',
         ]);
 
-        $productoData = $request->except('ingredientes');
-        $productoData['imagen'] = $request->file('imagen')->store('productos', 'public');
+        $productoData = $request->except(['imagen', 'ingredientes']);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('public/productos');
+            $productoData['imagen'] = Storage::url($path);
+        } else {
+            // Asigna una imagen por defecto si no se carga ninguna
+            $productoData['imagen'] = Storage::url('public/productos/default.jpg');
+        }
+
         $producto = Producto::create($productoData);
 
         if ($request->has('ingredientes')) {
@@ -101,7 +109,7 @@ class ProductoController extends Controller
             }
             $producto->ingredientes()->sync($ingredientesToSync);
         }
-
+        
         Log::info('Admin\ProductoController@store: Producto ' . $producto->nombre . ' creado exitosamente por ' . Auth::user()->email . '. ID: ' . $producto->id);
         return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
     }
@@ -136,7 +144,7 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => ['required', 'string', 'max:255', Rule::unique('productos', 'nombre')->ignore($producto->id)],
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
+            'precio' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'stock' => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -161,13 +169,14 @@ class ProductoController extends Controller
             'ingredientes.*.exists' => 'Alguno de los ingredientes seleccionados no es válido.',
         ]);
 
-        $productoData = $request->except('ingredientes');
+        $productoData = $request->except(['imagen', 'ingredientes']);
 
         if ($request->hasFile('imagen')) {
-            if ($producto->imagen) {
-                Storage::disk('public')->delete($producto->imagen);
+            if ($producto->imagen && strpos($producto->imagen, 'default.jpg') === false) {
+                Storage::delete(str_replace('/storage', 'public', $producto->imagen));
             }
-            $productoData['imagen'] = $request->file('imagen')->store('productos', 'public');
+            $path = $request->file('imagen')->store('public/productos');
+            $productoData['imagen'] = Storage::url($path);
         }
 
         $producto->update($productoData);
@@ -196,8 +205,8 @@ class ProductoController extends Controller
     {
         $this->authorize('delete', $producto);
 
-        if ($producto->imagen) {
-            Storage::disk('public')->delete($producto->imagen);
+        if ($producto->imagen && strpos($producto->imagen, 'default.jpg') === false) {
+            Storage::delete(str_replace('/storage', 'public', $producto->imagen));
         }
         $producto->ingredientes()->detach();
         $producto->delete();

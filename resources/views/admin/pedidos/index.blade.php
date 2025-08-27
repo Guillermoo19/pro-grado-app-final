@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             {{-- Botón para volver al dashboard principal --}}
-            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150" style="color: #4A2004;">
                 Volver a Inicio
             </a>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -13,44 +13,45 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     {{-- Pedidos Pendientes --}}
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-yellow-600">Pedidos Pendientes</h2>
-                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        {{-- Aplicamos el color de fondo a todo el cuadro --}}
+                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($pedidosPendientes as $pedido)
-                                            <tr>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->id }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">${{ number_format($pedido->total, 2) }}</td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                            <tr style="background-color: #5C2809;">
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->id }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">${{ number_format($pedido->total, 2) }}</td>
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
@@ -61,7 +62,7 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
@@ -71,13 +72,13 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
-                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-center text-gray-500">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
                                                     No hay pedidos pendientes por revisar.
                                                 </td>
                                             </tr>
@@ -91,38 +92,39 @@
                     {{-- Pedidos Completados --}}
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-green-600">Pedidos Completados</h2>
-                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        {{-- Aplicamos el color de fondo a todo el cuadro --}}
+                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($pedidosCompletados as $pedido)
-                                            <tr>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->id }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">${{ number_format($pedido->total, 2) }}</td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                            <tr style="background-color: #5C2809;">
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->id }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">${{ number_format($pedido->total, 2) }}</td>
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
@@ -133,7 +135,7 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
@@ -143,13 +145,13 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
-                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-center text-gray-500">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
                                                     No hay pedidos completados.
                                                 </td>
                                             </tr>
@@ -163,27 +165,28 @@
                     {{-- Pedidos Cancelados pero Pagados --}}
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-orange-600">Pedidos Cancelados (Pagados)</h2>
-                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        {{-- Aplicamos el color de fondo a todo el cuadro --}}
+                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Acciones
                                             </th>
                                         </tr>
@@ -191,11 +194,11 @@
                                     <tbody>
                                         {{-- Aquí se corrige la iteración --}}
                                         @forelse ($pedidosCanceladosPagados as $pedido)
-                                            <tr>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->id }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">${{ number_format($pedido->total, 2) }}</td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                            <tr style="background-color: #5C2809;">
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->id }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">${{ number_format($pedido->total, 2) }}</td>
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
@@ -206,7 +209,7 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
@@ -216,13 +219,13 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
-                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-center text-gray-500">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
                                                     No hay pedidos cancelados que necesiten revisión.
                                                 </td>
                                             </tr>
@@ -236,38 +239,39 @@
                     {{-- Pedidos Rechazados --}}
                     <div>
                         <h2 class="text-2xl font-semibold mb-4 text-red-600">Pedidos Rechazados</h2>
-                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        {{-- Aplicamos el color de fondo a todo el cuadro --}}
+                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($pedidosRechazados as $pedido)
-                                            <tr>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->id }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">{{ $pedido->user->name ?? 'N/A' }}</td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">${{ number_format($pedido->total, 2) }}</td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                            <tr style="background-color: #5C2809;">
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->id }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">{{ $pedido->user->name ?? 'N/A' }}</td>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">${{ number_format($pedido->total, 2) }}</td>
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pedido === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pedido === 'en_preparacion') bg-blue-100 text-blue-800
@@ -278,7 +282,7 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pedido)) }}
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         @if ($pedido->estado_pago === 'pendiente') bg-yellow-100 text-yellow-800
                                                         @elseif ($pedido->estado_pago === 'pendiente_revision') bg-orange-100 text-orange-800
@@ -288,13 +292,13 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
-                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                    <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-center text-gray-500">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
                                                     No hay pedidos rechazados.
                                                 </td>
                                             </tr>

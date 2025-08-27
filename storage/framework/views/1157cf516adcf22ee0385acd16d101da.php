@@ -22,12 +22,12 @@
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center space-x-4">
                             
-                            <a href="<?php echo e(route('admin.dashboard')); ?>" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <a href="<?php echo e(route('admin.dashboard')); ?>" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                                 Volver a Inicio
                             </a>
                             <h3 class="text-2xl font-bold text-chamos-marron-oscuro"><?php echo e(__('Lista de Roles')); ?></h3>
                         </div>
-                        <a href="<?php echo e(route('admin.roles.create')); ?>" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <a href="<?php echo e(route('admin.roles.create')); ?>" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                             <?php echo e(__('Crear Nuevo Rol')); ?>
 
                         </a>
@@ -68,14 +68,14 @@
 
                                             </td>
                                             <td class="py-4 px-6 flex items-center space-x-2">
-                                                <a href="<?php echo e(route('admin.roles.edit', $role->id)); ?>" class="font-medium text-blue-600 hover:underline">
+                                                <a href="<?php echo e(route('admin.roles.edit', $role->id)); ?>" class="inline-flex items-center px-4 py-2 bg-blue-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-blue-300 focus:outline-none focus:border-blue-400 focus:ring ring-blue-100 disabled:opacity-25 transition ease-in-out duration-150">
                                                     <?php echo e(__('Editar')); ?>
 
                                                 </a>
                                                 <form action="<?php echo e(route('admin.roles.destroy', $role->id)); ?>" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este rol? Esta acción es irreversible.');">
                                                     <?php echo csrf_field(); ?>
                                                     <?php echo method_field('DELETE'); ?>
-                                                    <button type="submit" class="font-medium text-red-600 hover:underline ml-2">
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-800 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150 ml-2">
                                                         <?php echo e(__('Eliminar')); ?>
 
                                                     </button>

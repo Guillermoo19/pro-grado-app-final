@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use App\Models\Categoria; // Asegúrate de importar la clase Categoria
 use App\Models\Ingrediente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -11,15 +12,20 @@ use Illuminate\Support\Facades\Auth;
 class ProductoController extends Controller
 {
     /**
-     * Muestra el catálogo de productos para el público.
+     * Muestra el catálogo de productos para el público, agrupados por categoría.
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        $productos = Producto::with('categoria')->orderBy('nombre')->get();
+        // Obtiene todas las categorías y carga sus productos relacionados.
+        // Esto evita múltiples consultas a la base de datos (problema de N+1)
+        $categorias = Categoria::with('productos')->orderBy('nombre')->get();
+
         Log::info('ProductoController@index: Catálogo de productos público accedido por ' . (Auth::check() ? Auth::user()->email : 'Invitado'));
-        return view('productos.index', compact('productos'));
+
+        // Pasa la colección de categorías a la vista
+        return view('productos.index', compact('categorias'));
     }
 
     /**

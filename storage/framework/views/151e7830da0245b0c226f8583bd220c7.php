@@ -114,7 +114,8 @@
                             <option value="entregado" <?php echo e($pedido->estado_pedido == 'entregado' ? 'selected' : ''); ?>>Entregado</option>
                             <option value="cancelado" <?php echo e($pedido->estado_pedido == 'cancelado' ? 'selected' : ''); ?>>Cancelado</option>
                         </select>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Actualizar Estado Pedido</button>
+                        
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">Actualizar Estado Pedido</button>
                     </div>
                 </form>
 
@@ -128,12 +129,14 @@
                             <option value="pagado" <?php echo e($pedido->estado_pago == 'pagado' ? 'selected' : ''); ?>>Pagado</option>
                             <option value="rechazado" <?php echo e($pedido->estado_pago == 'rechazado' ? 'selected' : ''); ?>>Rechazado</option>
                         </select>
-                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Actualizar Estado Pago</button>
+                        
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">Actualizar Estado Pago</button>
                     </div>
                 </form>
 
                 <div class="mt-8 text-right">
-                    <a href="<?php echo e(route('admin.pedidos.index')); ?>" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    
+                    <a href="<?php echo e(route('admin.pedidos.index')); ?>" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                         <?php echo e(__('Volver a la Lista de Pedidos')); ?>
 
                     </a>

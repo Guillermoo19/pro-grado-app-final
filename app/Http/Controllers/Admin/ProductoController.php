@@ -82,7 +82,6 @@ class ProductoController extends Controller
             'stock.min' => 'El stock no puede ser negativo.',
             'categoria_id.required' => 'La categoría es obligatoria.',
             'categoria_id.exists' => 'La categoría seleccionada no es válida.',
-            'imagen.required' => 'La imagen del producto es obligatoria.',
             'imagen.image' => 'El archivo debe ser una imagen.',
             'imagen.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, gif o svg.',
             'imagen.max' => 'La imagen no debe exceder los 2MB.',
@@ -93,11 +92,14 @@ class ProductoController extends Controller
         $productoData = $request->except(['imagen', 'ingredientes']);
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('public/productos');
-            $productoData['imagen'] = Storage::url($path);
+            // Cambio aquí: guardar la imagen en la carpeta 'public/productos'
+            // y obtener la ruta que Laravel genera, que ya es la correcta.
+            $path = $request->file('imagen')->store('productos', 'public');
+            // La ruta devuelta por store es 'productos/nombre-de-archivo.jpg'
+            $productoData['imagen'] = $path;
         } else {
             // Asigna una imagen por defecto si no se carga ninguna
-            $productoData['imagen'] = Storage::url('public/productos/default.jpg');
+            $productoData['imagen'] = 'productos/default.jpg';
         }
 
         $producto = Producto::create($productoData);
@@ -172,11 +174,14 @@ class ProductoController extends Controller
         $productoData = $request->except(['imagen', 'ingredientes']);
 
         if ($request->hasFile('imagen')) {
-            if ($producto->imagen && strpos($producto->imagen, 'default.jpg') === false) {
-                Storage::delete(str_replace('/storage', 'public', $producto->imagen));
+            // Eliminar la imagen anterior si no es la por defecto
+            if ($producto->imagen && $producto->imagen !== 'productos/default.jpg') {
+                Storage::disk('public')->delete($producto->imagen);
             }
-            $path = $request->file('imagen')->store('public/productos');
-            $productoData['imagen'] = Storage::url($path);
+            // Cambio aquí: guardar la nueva imagen en 'productos'
+            $path = $request->file('imagen')->store('productos', 'public');
+            // La ruta devuelta es 'productos/nombre-de-archivo.jpg'
+            $productoData['imagen'] = $path;
         }
 
         $producto->update($productoData);
@@ -205,8 +210,9 @@ class ProductoController extends Controller
     {
         $this->authorize('delete', $producto);
 
-        if ($producto->imagen && strpos($producto->imagen, 'default.jpg') === false) {
-            Storage::delete(str_replace('/storage', 'public', $producto->imagen));
+        // Eliminar la imagen asociada si no es la por defecto
+        if ($producto->imagen && $producto->imagen !== 'productos/default.jpg') {
+            Storage::disk('public')->delete($producto->imagen);
         }
         $producto->ingredientes()->detach();
         $producto->delete();

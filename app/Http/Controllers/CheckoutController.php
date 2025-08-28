@@ -22,13 +22,13 @@ class CheckoutController extends Controller
         }
 
         // Cargar las relaciones necesarias.
-        // La relación 'detalles.producto' permite acceder a los detalles del pedido y a los productos relacionados.
         $pedido->load('detalles.producto');
         
-        // Obtener el único registro de configuración para mostrar los datos bancarios.
+        // Obtener el único registro de configuración para mostrar los datos de pago.
+        // Ahora pasamos el objeto completo, ya que la elección se hace en la vista.
         $configuracion = Configuracion::first() ?? new Configuracion();
 
-        // Pasar el pedido y la configuración a la vista. El total ya está guardado en el modelo $pedido.
+        // Pasar el pedido y la configuración a la vista.
         return view('checkout.confirm', compact('pedido', 'configuracion'));
     }
 
@@ -37,33 +37,35 @@ class CheckoutController extends Controller
      */
     public function uploadProof(Request $request, Pedido $pedido)
     {
+        // Se añade 'metodo_pago' a las reglas de validación
         $rules = [
             'proof_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
             'tipo_entrega' => 'required|in:recoger_local,domicilio',
+            'metodo_pago' => 'required|in:bank_transfer,qr_payment',
         ];
 
         if ($request->input('tipo_entrega') === 'domicilio') {
             $rules['direccion_entrega'] = 'required|string|max:255';
             $rules['telefono_contacto'] = 'required|string|max:20';
         } else {
-            // Si el tipo de entrega no es 'domicilio', los campos deben ser anulables
             $rules['direccion_entrega'] = 'nullable|string|max:255';
             $rules['telefono_contacto'] = 'nullable|string|max:20';
         }
 
         $request->validate($rules);
 
-        // Se usa una transacción para asegurar que todas las operaciones se completen con éxito.
         DB::beginTransaction();
         try {
             $imagePath = $request->file('proof_image')->store('proofs', 'public');
             
+            // Se actualiza el campo 'metodo_pago' en la base de datos del pedido
             $pedido->update([
                 'comprobante_url' => $imagePath,
                 'estado_pago' => 'pendiente_revision',
                 'tipo_entrega' => $request->input('tipo_entrega'),
                 'direccion_entrega' => $request->input('direccion_entrega'),
                 'telefono_contacto' => $request->input('telefono_contacto'),
+                'metodo_pago' => $request->input('metodo_pago'), // Guardamos la opción seleccionada por el usuario
             ]);
 
             DB::commit();

@@ -42,25 +42,22 @@
                             </h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 @foreach ($categoria->productos as $producto)
-                                    <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 transform transition duration-300 hover:scale-105 hover:shadow-xl">
-                                        {{-- Contenido del producto --}}
+                                    <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 flex flex-col items-center text-center transform transition duration-300 hover:scale-105 hover:shadow-xl">
                                         <div class="relative w-full h-48 mb-4">
                                             @if ($producto->imagen)
-                                                <img src="{{ asset('storage/' . str_replace('public/', '', $producto->imagen)) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-cover rounded-md shadow-md">
+                                                {{-- Usamos asset() para construir la ruta correcta a la imagen en la carpeta 'storage' --}}
+                                                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-cover rounded-md shadow-md">
                                             @else
                                                 <img src="https://placehold.co/400x300.png?text=Sin+Imagen" alt="Placeholder" class="w-full h-full object-cover rounded-md shadow-md">
                                             @endif
-                                            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                <a href="{{ route('productos.show', $producto->id) }}" class="text-white text-xl font-bold">Ver Detalles</a>
-                                            </div>
                                         </div>
                                         <h4 class="text-xl font-semibold text-gray-900 mb-2">{{ $producto->nombre }}</h4>
-                                        <p class="text-gray-700 text-center mb-4">{{ Str::limit($producto->descripcion, 75) }}</p>
-                                        {{-- CAMBIO: Color del precio a negro para mejor visibilidad --}}
-                                        <span class="text-2xl font-bold text-gray-900">${{ number_format($producto->precio, 2) }}</span>
-                                        <a href="{{ route('productos.show', $producto->id) }}" class="mt-4 block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                                            Añadir al Carrito
+                                        <p class="text-gray-700 mb-4 flex-grow">{{ Str::limit($producto->descripcion, 75) }}</p>
+                                        <span class="text-2xl font-bold text-gray-900 mb-4">${{ number_format($producto->precio, 2) }}</span>
+                                        <a href="{{ route('productos.show', $producto->id) }}" class="mt-auto block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
+                                            Ver Detalles
                                         </a>
+
                                         {{-- Sección de administración para la vista pública --}}
                                         @auth
                                             @if (Auth::user()->isAdmin())

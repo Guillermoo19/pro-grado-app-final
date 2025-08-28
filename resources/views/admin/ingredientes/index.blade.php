@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             {{-- Botón para volver al dashboard principal --}}
-            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                 Volver a Inicio
             </a>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -29,7 +29,7 @@
                     @endif
 
                     <div class="mb-4">
-                        <a href="{{ route('admin.ingredientes.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <a href="{{ route('admin.ingredientes.create') }}" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                             {{ __('Crear Nuevo Ingrediente') }}
                         </a>
                     </div>
@@ -60,13 +60,13 @@
                                                 {{ $ingrediente->descripcion ?? 'N/A' }}
                                             </td>
                                             <td class="py-4 px-6 flex items-center space-x-2">
-                                                <a href="{{ route('admin.ingredientes.edit', $ingrediente->id) }}" class="font-medium text-blue-600 hover:underline">
+                                                <a href="{{ route('admin.ingredientes.edit', $ingrediente->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-200 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-blue-300 active:bg-blue-400 focus:outline-none focus:border-blue-500 focus:ring ring-blue-200 disabled:opacity-25 transition ease-in-out duration-150">
                                                     {{ __('Editar') }}
                                                 </a>
                                                 <form action="{{ route('admin.ingredientes.destroy', $ingrediente->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este ingrediente? Esta acción es irreversible y afectará a los productos asociados.');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="font-medium text-red-600 hover:underline ml-2">
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-800 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150 ml-2">
                                                         {{ __('Eliminar') }}
                                                     </button>
                                                 </form>

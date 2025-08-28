@@ -65,7 +65,6 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255|unique:productos,nombre',
             'descripcion' => 'nullable|string',
             'precio' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'stock' => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'ingredientes' => 'array',
@@ -77,9 +76,6 @@ class ProductoController extends Controller
             'precio.numeric' => 'El precio debe ser un número.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.regex' => 'El precio debe tener como máximo dos decimales.',
-            'stock.required' => 'El stock es obligatorio.',
-            'stock.integer' => 'El stock debe ser un número entero.',
-            'stock.min' => 'El stock no puede ser negativo.',
             'categoria_id.required' => 'La categoría es obligatoria.',
             'categoria_id.exists' => 'La categoría seleccionada no es válida.',
             'imagen.image' => 'El archivo debe ser una imagen.',
@@ -92,16 +88,12 @@ class ProductoController extends Controller
         $productoData = $request->except(['imagen', 'ingredientes']);
 
         if ($request->hasFile('imagen')) {
-            // Cambio aquí: guardar la imagen en la carpeta 'public/productos'
-            // y obtener la ruta que Laravel genera, que ya es la correcta.
             $path = $request->file('imagen')->store('productos', 'public');
-            // La ruta devuelta por store es 'productos/nombre-de-archivo.jpg'
             $productoData['imagen'] = $path;
         } else {
-            // Asigna una imagen por defecto si no se carga ninguna
             $productoData['imagen'] = 'productos/default.jpg';
         }
-
+        
         $producto = Producto::create($productoData);
 
         if ($request->has('ingredientes')) {
@@ -147,7 +139,7 @@ class ProductoController extends Controller
             'nombre' => ['required', 'string', 'max:255', Rule::unique('productos', 'nombre')->ignore($producto->id)],
             'descripcion' => 'nullable|string',
             'precio' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'stock' => 'required|integer|min:0',
+            // Se elimina la validación del campo 'stock'
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'ingredientes' => 'array',
@@ -159,9 +151,6 @@ class ProductoController extends Controller
             'precio.numeric' => 'El precio debe ser un número.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.regex' => 'El precio debe tener como máximo dos decimales.',
-            'stock.required' => 'El stock es obligatorio.',
-            'stock.integer' => 'El stock debe ser un número entero.',
-            'stock.min' => 'El stock no puede ser negativo.',
             'categoria_id.required' => 'La categoría es obligatoria.',
             'categoria_id.exists' => 'La categoría seleccionada no es válida.',
             'imagen.image' => 'El archivo debe ser una imagen.',
@@ -172,15 +161,14 @@ class ProductoController extends Controller
         ]);
 
         $productoData = $request->except(['imagen', 'ingredientes']);
-
+        
         if ($request->hasFile('imagen')) {
             // Eliminar la imagen anterior si no es la por defecto
             if ($producto->imagen && $producto->imagen !== 'productos/default.jpg') {
                 Storage::disk('public')->delete($producto->imagen);
             }
-            // Cambio aquí: guardar la nueva imagen en 'productos'
+            // Guardar la nueva imagen
             $path = $request->file('imagen')->store('productos', 'public');
-            // La ruta devuelta es 'productos/nombre-de-archivo.jpg'
             $productoData['imagen'] = $path;
         }
 

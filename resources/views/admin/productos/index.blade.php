@@ -12,7 +12,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center space-x-4">
                             {{-- Botón para volver al dashboard principal --}}
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-[#ffd700] border border-transparent rounded-md font-semibold text-xs text-chamos-marron-oscuro uppercase tracking-widest hover:bg-[#e6c100] active:bg-[#ccad00] focus:outline-none focus:border-[#ccad00] focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                                 Volver a Inicio
                             </a>
                             <h3 class="text-2xl font-bold text-chamos-marron-oscuro">
@@ -20,8 +20,8 @@
                             </h3>
                         </div>
                         {{-- Botón para crear un nuevo plato --}}
-                        <a href="{{ route('admin.productos.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            {{ __('Crear Nuevo Plato') }}
+                        <a href="{{ route('admin.productos.create') }}" class="inline-flex items-center px-4 py-2 bg-[#ffd700] border border-transparent rounded-md font-semibold text-xs text-chamos-marron-oscuro uppercase tracking-widest hover:bg-[#e6c100] active:bg-[#ccad00] focus:outline-none focus:border-[#ccad00] focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                {{ __('Crear Nuevo Plato') }}
                         </a>
                     </div>
                     

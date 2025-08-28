@@ -30,38 +30,38 @@
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-yellow-600">Pedidos Pendientes</h2>
                         
-                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
+                        <div class="p-6 rounded-lg shadow-md bg-white">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $__empty_1 = true; $__currentLoopData = $pedidosPendientes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pedido): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                            <tr style="background-color: #5C2809;">
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->id); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">$<?php echo e(number_format($pedido->total, 2)); ?></td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                            <tr class="bg-white">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->id); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800">$<?php echo e(number_format($pedido->total, 2)); ?></td>
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pedido === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pedido === 'en_preparacion'): ?> bg-blue-100 text-blue-800
@@ -73,7 +73,7 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pago === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pago === 'pendiente_revision'): ?> bg-orange-100 text-orange-800
@@ -84,13 +84,13 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
-                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-yellow-600 hover:text-yellow-800">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                            <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
+                                            <tr class="bg-white">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-800">
                                                     No hay pedidos pendientes por revisar.
                                                 </td>
                                             </tr>
@@ -105,38 +105,38 @@
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-green-600">Pedidos Completados</h2>
                         
-                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
+                        <div class="p-6 rounded-lg shadow-md bg-white">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $__empty_1 = true; $__currentLoopData = $pedidosCompletados; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pedido): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                            <tr style="background-color: #5C2809;">
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->id); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">$<?php echo e(number_format($pedido->total, 2)); ?></td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                            <tr class="bg-white">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->id); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800">$<?php echo e(number_format($pedido->total, 2)); ?></td>
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pedido === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pedido === 'en_preparacion'): ?> bg-blue-100 text-blue-800
@@ -148,7 +148,7 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pago === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pago === 'pendiente_revision'): ?> bg-orange-100 text-orange-800
@@ -159,13 +159,13 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
-                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-green-600 hover:text-green-800">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                            <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
+                                            <tr class="bg-white">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-800">
                                                     No hay pedidos completados.
                                                 </td>
                                             </tr>
@@ -180,27 +180,27 @@
                     <div class="mb-8">
                         <h2 class="text-2xl font-semibold mb-4 text-orange-600">Pedidos Cancelados (Pagados)</h2>
                         
-                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
+                        <div class="p-6 rounded-lg shadow-md bg-white">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Acciones
                                             </th>
                                         </tr>
@@ -208,11 +208,11 @@
                                     <tbody>
                                         
                                         <?php $__empty_1 = true; $__currentLoopData = $pedidosCanceladosPagados; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pedido): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                            <tr style="background-color: #5C2809;">
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->id); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">$<?php echo e(number_format($pedido->total, 2)); ?></td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                            <tr class="bg-white">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->id); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800">$<?php echo e(number_format($pedido->total, 2)); ?></td>
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pedido === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pedido === 'en_preparacion'): ?> bg-blue-100 text-blue-800
@@ -224,7 +224,7 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pago === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pago === 'pendiente_revision'): ?> bg-orange-100 text-orange-800
@@ -235,13 +235,13 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
-                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-orange-600 hover:text-orange-800">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                            <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
+                                            <tr class="bg-white">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-800">
                                                     No hay pedidos cancelados que necesiten revisión.
                                                 </td>
                                             </tr>
@@ -256,38 +256,38 @@
                     <div>
                         <h2 class="text-2xl font-semibold mb-4 text-red-600">Pedidos Rechazados</h2>
                         
-                        <div style="background-color: #5C2809;" class="p-6 rounded-lg shadow-md">
+                        <div class="p-6 rounded-lg shadow-md bg-white">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full leading-normal">
                                     <thead>
                                         <tr>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 ID Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Usuario
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Total
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pedido
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Estado Pago
                                             </th>
-                                            <th class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-600 text-left text-xs font-semibold uppercase tracking-wider text-yellow-100">
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                 Acciones
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $__empty_1 = true; $__currentLoopData = $pedidosRechazados; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pedido): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                            <tr style="background-color: #5C2809;">
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->id); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-yellow-100">$<?php echo e(number_format($pedido->total, 2)); ?></td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                            <tr class="bg-white">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->id); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800"><?php echo e($pedido->user->name ?? 'N/A'); ?></td>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm text-gray-800">$<?php echo e(number_format($pedido->total, 2)); ?></td>
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pedido === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pedido === 'en_preparacion'): ?> bg-blue-100 text-blue-800
@@ -299,7 +299,7 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="py-4 px-6 border-b border-gray-200 dark:border-gray-600 text-sm">
+                                                <td class="py-4 px-6 border-b border-gray-200 text-sm">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                         <?php if($pedido->estado_pago === 'pendiente'): ?> bg-yellow-100 text-yellow-800
                                                         <?php elseif($pedido->estado_pago === 'pendiente_revision'): ?> bg-orange-100 text-orange-800
@@ -310,13 +310,13 @@
 
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm">
-                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-yellow-400 hover:text-yellow-600">Ver Detalles</a>
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                    <a href="<?php echo e(route('admin.pedidos.show', $pedido->id)); ?>" class="text-red-600 hover:text-red-800">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                            <tr>
-                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 dark:border-gray-600 text-sm text-center text-yellow-100">
+                                            <tr class="bg-white">
+                                                <td colspan="6" class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-800">
                                                     No hay pedidos rechazados.
                                                 </td>
                                             </tr>

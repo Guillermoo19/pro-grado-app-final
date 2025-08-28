@@ -74,17 +74,17 @@
                                     <div class="flex flex-col items-end space-y-2 ml-4">
                                         <p class="font-bold text-lg text-gray-900">$<?php echo e(number_format($item['subtotal'], 2)); ?></p>
                                         <div class="flex items-center space-x-2">
-                                             
+                                            
                                             <form action="<?php echo e(route('carrito.update')); ?>" method="POST" class="flex items-center">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="item_key" value="<?php echo e($item['item_key']); ?>">
                                                 <input type="number" name="cantidad" value="<?php echo e($item['cantidad']); ?>" min="0" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center">
-                                                <button type="submit" class="ml-2 px-3 py-1 bg-chamos-verde text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                                <button type="submit" class="ml-2 px-4 py-2 bg-green-500 text-white font-bold rounded-md shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                                     Actualizar
                                                 </button>
                                             </form>
                                         </div>
-                                         
+                                        
                                         <form action="<?php echo e(route('carrito.remove')); ?>" method="POST">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="item_key" value="<?php echo e($item['item_key']); ?>">
@@ -105,7 +105,7 @@
                                 <form id="checkoutForm" action="<?php echo e(route('carrito.checkout')); ?>" method="POST">
                                     <?php echo csrf_field(); ?>
                                     <button type="submit" 
-                                            class="px-6 py-3 bg-chamos-verde text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                            class="px-6 py-3 bg-chamos-amarillo text-chamos-marron-oscuro font-semibold rounded-md shadow-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition ease-in-out duration-150">
                                         <?php echo e(__('Proceder al Pago')); ?>
 
                                     </button>

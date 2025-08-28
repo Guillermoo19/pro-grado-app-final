@@ -58,11 +58,9 @@
                         <?php if($pedido->user): ?>
                             <p class="text-gray-700 mb-2"><strong>Nombre:</strong> <?php echo e($pedido->user->name); ?></p>
                             <p class="text-gray-700 mb-2"><strong>Correo:</strong> <?php echo e($pedido->user->email); ?></p>
-                            
                             <?php if($pedido->telefono_contacto): ?>
                                 <p class="text-gray-700 mb-2"><strong>Teléfono (Pedido):</strong> <?php echo e($pedido->telefono_contacto); ?></p>
                             <?php endif; ?>
-                            
                             <?php if($pedido->direccion_entrega): ?>
                                 <p class="text-gray-700 mb-2"><strong>Dirección (Pedido):</strong> <?php echo e($pedido->direccion_entrega); ?></p>
                             <?php endif; ?>
@@ -106,14 +104,17 @@
                 <?php if($pedido->comprobante_url): ?>
                     <div class="mb-4">
                         <img src="<?php echo e(asset('storage/' . $pedido->comprobante_url)); ?>" alt="Comprobante de Pago" class="w-64 h-auto rounded-lg shadow-md mt-2">
-                        <a href="<?php echo e(asset('storage/' . $pedido->comprobante_url)); ?>" target="_blank" class="text-indigo-600 hover:text-indigo-900 text-sm mt-2 block">Ver comprobante en tamaño completo</a>
+                        <a href="<?php echo e(asset('storage/' . $pedido->comprobante_url)); ?>" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-200 border border-transparent rounded-md font-semibold text-xs text-gray-900 uppercase tracking-widest hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition ease-in-out duration-150 mt-4">
+                            <?php echo e(__('Ver comprobante en tamaño completo')); ?>
+
+                        </a>
                     </div>
                 <?php else: ?>
                     <p class="text-gray-600 mb-4">No se ha subido ningún comprobante para este pedido.</p>
                 <?php endif; ?>
 
                 <div class="mt-8 text-right">
-                    <a href="<?php echo e(route('pedidos.index')); ?>" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="<?php echo e(route('pedidos.index')); ?>" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-gray-900 uppercase tracking-widest hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 transition ease-in-out duration-150">
                         <?php echo e(__('Volver a Mis Pedidos')); ?>
 
                     </a>

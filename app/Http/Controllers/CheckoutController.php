@@ -24,8 +24,8 @@ class CheckoutController extends Controller
         // Cargar las relaciones necesarias.
         $pedido->load('detalles.producto');
         
-        // Obtener el único registro de configuración para mostrar los datos de pago.
-        // Ahora pasamos el objeto completo, ya que la elección se hace en la vista.
+        // Obtener el único registro de configuración.
+        // Si no existe, crea una nueva instancia vacía para evitar errores.
         $configuracion = Configuracion::first() ?? new Configuracion();
 
         // Pasar el pedido y la configuración a la vista.

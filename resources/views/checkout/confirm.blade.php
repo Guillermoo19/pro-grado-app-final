@@ -63,7 +63,9 @@
                     <p class="text-gray-700 mb-4">
                         Por favor, escanea este código QR para realizar el pago y sube el comprobante.
                     </p>
-                    <img src="{{ asset('images/QR.png') }}" alt="Código QR para pago" class="w-64 h-64 mx-auto rounded-lg shadow-lg">
+                    {{-- LÍNEA CORREGIDA: Ahora usamos la URL de la imagen del modelo $configuracion --}}
+                    {{-- Si $configuracion->ruta_imagen_qr existe, la usamos, si no, usamos la imagen por defecto --}}
+                    <img src="{{ $configuracion->ruta_imagen_qr ?? asset('images/QR.png') }}" alt="Código QR para pago" class="w-64 h-64 mx-auto rounded-lg shadow-lg">
                 </div>
                 
                 <div class="mb-8">

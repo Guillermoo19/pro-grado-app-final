@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuracion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ConfiguracionController extends Controller
 {
@@ -29,24 +30,46 @@ class ConfiguracionController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate([
-            'banco' => 'required|string|max:255',
-            'numero_cuenta' => 'required|string|max:255',
-            'nombre_titular' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'payment_method' => 'required|string',
+            'banco' => 'nullable|required_if:payment_method,bank_transfer|string|max:255',
+            'numero_cuenta' => 'nullable|required_if:payment_method,bank_transfer|string|max:255',
+            'nombre_titular' => 'nullable|required_if:payment_method,bank_transfer|string|max:255',
             'tipo_cuenta' => 'nullable|string|max:255',
             'numero_contacto' => 'required|string|max:255',
+            'qr_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validación para la imagen
         ]);
 
         // Busca el primer registro de configuración
         $configuracion = Configuracion::first();
 
         // Si no existe, crea uno nuevo. Si existe, lo actualiza.
-        // Esto garantiza que siempre haya un solo registro de configuración
         if (!$configuracion) {
-            Configuracion::create($request->all());
-        } else {
-            $configuracion->update($request->all());
+            $configuracion = new Configuracion();
         }
+
+        // Manejo de la subida de imagen del QR
+        if ($request->hasFile('qr_image')) {
+            // Eliminar la imagen anterior si existe
+            if ($configuracion->qr_image_path) {
+                Storage::disk('public')->delete($configuracion->qr_image_path);
+            }
+            // Guarda la nueva imagen en el directorio public/images/qrcodes
+            $path = $request->file('qr_image')->store('images/qrcodes', 'public');
+            $configuracion->qr_image_path = $path;
+        }
+
+        // Actualiza los demás campos
+        // Esta línea estaba causando el error porque la columna 'metodo_pago' no existe en la tabla.
+        // $configuracion->metodo_pago = $validatedData['payment_method'];
+
+        $configuracion->banco = $validatedData['banco'] ?? null;
+        $configuracion->numero_cuenta = $validatedData['numero_cuenta'] ?? null;
+        $configuracion->nombre_titular = $validatedData['nombre_titular'] ?? null;
+        $configuracion->tipo_cuenta = $validatedData['tipo_cuenta'] ?? null;
+        $configuracion->numero_contacto = $validatedData['numero_contacto'];
+
+        $configuracion->save();
 
         // Redirecciona de vuelta con un mensaje de éxito
         return redirect()->route('admin.configuracion.edit')->with('status', '¡Configuración actualizada con éxito!');

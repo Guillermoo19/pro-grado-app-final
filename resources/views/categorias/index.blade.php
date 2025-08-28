@@ -12,7 +12,8 @@
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center space-x-4">
                             {{-- Botón para volver al dashboard principal --}}
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            {{-- Aquí está el cambio: de bg-gray-800 a bg-yellow-400 y text-white a text-black --}}
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-yellow-500 active:bg-yellow-600 focus:outline-none focus:border-yellow-600 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                                 Volver a Inicio
                             </a>
                             <h3 class="text-lg font-medium text-gray-900">Listado de Categorías</h3>

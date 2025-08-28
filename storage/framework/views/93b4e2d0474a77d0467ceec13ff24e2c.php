@@ -54,25 +54,22 @@
                             </h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <?php $__currentLoopData = $categoria->productos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 transform transition duration-300 hover:scale-105 hover:shadow-xl">
-                                        
+                                    <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 flex flex-col items-center text-center transform transition duration-300 hover:scale-105 hover:shadow-xl">
                                         <div class="relative w-full h-48 mb-4">
                                             <?php if($producto->imagen): ?>
-                                                <img src="<?php echo e(asset('storage/' . str_replace('public/', '', $producto->imagen))); ?>" alt="<?php echo e($producto->nombre); ?>" class="w-full h-full object-cover rounded-md shadow-md">
+                                                
+                                                <img src="<?php echo e(asset('storage/' . $producto->imagen)); ?>" alt="<?php echo e($producto->nombre); ?>" class="w-full h-full object-cover rounded-md shadow-md">
                                             <?php else: ?>
                                                 <img src="https://placehold.co/400x300.png?text=Sin+Imagen" alt="Placeholder" class="w-full h-full object-cover rounded-md shadow-md">
                                             <?php endif; ?>
-                                            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                <a href="<?php echo e(route('productos.show', $producto->id)); ?>" class="text-white text-xl font-bold">Ver Detalles</a>
-                                            </div>
                                         </div>
                                         <h4 class="text-xl font-semibold text-gray-900 mb-2"><?php echo e($producto->nombre); ?></h4>
-                                        <p class="text-gray-700 text-center mb-4"><?php echo e(Str::limit($producto->descripcion, 75)); ?></p>
-                                        
-                                        <span class="text-2xl font-bold text-gray-900">$<?php echo e(number_format($producto->precio, 2)); ?></span>
-                                        <a href="<?php echo e(route('productos.show', $producto->id)); ?>" class="mt-4 block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                                            Añadir al Carrito
+                                        <p class="text-gray-700 mb-4 flex-grow"><?php echo e(Str::limit($producto->descripcion, 75)); ?></p>
+                                        <span class="text-2xl font-bold text-gray-900 mb-4">$<?php echo e(number_format($producto->precio, 2)); ?></span>
+                                        <a href="<?php echo e(route('productos.show', $producto->id)); ?>" class="mt-auto block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
+                                            Ver Detalles
                                         </a>
+
                                         
                                         <?php if(auth()->guard()->check()): ?>
                                             <?php if(Auth::user()->isAdmin()): ?>

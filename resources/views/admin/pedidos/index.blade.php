@@ -72,8 +72,14 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm space-x-2 flex items-center">
                                                     <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-yellow-600 hover:text-yellow-800">Ver Detalles</a>
+                                                    {{-- Formulario para eliminar --}}
+                                                    <form action="{{ route('admin.pedidos.destroy', $pedido->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800">Eliminar</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty
@@ -145,8 +151,14 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm space-x-2 flex items-center">
                                                     <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-green-600 hover:text-green-800">Ver Detalles</a>
+                                                    {{-- Formulario para eliminar --}}
+                                                    <form action="{{ route('admin.pedidos.destroy', $pedido->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800">Eliminar</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty
@@ -219,8 +231,14 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm space-x-2 flex items-center">
                                                     <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-orange-600 hover:text-orange-800">Ver Detalles</a>
+                                                    {{-- Formulario para eliminar --}}
+                                                    <form action="{{ route('admin.pedidos.destroy', $pedido->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800">Eliminar</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty
@@ -292,8 +310,14 @@
                                                             {{ ucfirst(str_replace('_', ' ', $pedido->estado_pago)) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <td class="px-5 py-5 border-b border-gray-200 text-sm space-x-2 flex items-center">
                                                     <a href="{{ route('admin.pedidos.show', $pedido->id) }}" class="text-red-600 hover:text-red-800">Ver Detalles</a>
+                                                    {{-- Formulario para eliminar --}}
+                                                    <form action="{{ route('admin.pedidos.destroy', $pedido->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800">Eliminar</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

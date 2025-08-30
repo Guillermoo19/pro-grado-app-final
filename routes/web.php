@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pedidos/{pedido}', [PedidoController::class, 'adminShow'])->name('pedidos.show');
         Route::patch('/pedidos/{pedido}/update-estado-pedido', [PedidoController::class, 'updateEstadoPedido'])->name('pedidos.update_estado_pedido');
         Route::patch('/pedidos/{pedido}/update-estado-pago', [PedidoController::class, 'updateEstadoPago'])->name('pedidos.update_estado_pago');
+        Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
 
         // Rutas para Usuarios (Admin)
         Route::resource('users', UserController::class); 

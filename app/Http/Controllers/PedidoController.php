@@ -84,6 +84,15 @@ class PedidoController extends Controller
     }
 
     /**
+     * Elimina un pedido del sistema.
+     */
+    public function destroy(Pedido $pedido)
+    {
+        $pedido->delete();
+        return back()->with('success', 'Pedido eliminado con éxito.');
+    }
+
+    /**
      * Actualiza el estado del pedido desde el panel de administración.
      */
     public function updateEstadoPedido(Request $request, Pedido $pedido)
